@@ -1,4 +1,4 @@
-import { PrismaClient, Budget } from '../generated';
+import { PrismaClient, Budget } from "../../dist/generated/index.js";
 export declare class BudgetRepository {
     private prisma;
     constructor(prismaClient: PrismaClient);

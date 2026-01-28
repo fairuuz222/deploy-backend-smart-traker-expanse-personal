@@ -1,5 +1,5 @@
 // src/database.ts
-import { PrismaClient } from "./generated";
+import { PrismaClient } from ".././dist/generated/index.js";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import config from "./utils/env.js";

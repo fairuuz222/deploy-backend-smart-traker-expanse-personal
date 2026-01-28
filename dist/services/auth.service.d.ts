@@ -17,7 +17,7 @@ export declare class AuthService {
             id: string;
             email: string;
             fullName: string;
-            role: import("../generated").$Enums.UserRole;
+            role: import("../../dist/generated/index.js").$Enums.UserRole;
         };
     }>;
     resendOtp(email: string): Promise<{

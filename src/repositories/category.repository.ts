@@ -1,4 +1,4 @@
-import { PrismaClient, TransactionType, CategoryOption } from '../generated';
+import { PrismaClient, TransactionType, CategoryOption } from '../../dist/generated';
 
 export class CategoryRepository { 
     constructor(private prisma: PrismaClient) {}

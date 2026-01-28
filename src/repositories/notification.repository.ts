@@ -1,4 +1,4 @@
-import { PrismaClient } from '../generated'; // Sesuaikan path ini
+import { PrismaClient } from '../../dist/generated'; // Sesuaikan path ini
 
 export class NotificationRepository {
   private prisma: PrismaClient;

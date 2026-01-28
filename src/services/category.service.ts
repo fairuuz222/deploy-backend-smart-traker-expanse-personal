@@ -1,6 +1,6 @@
 import { CategoryRepository } from '../repositories/category.repository';
 import prisma from '../database'; // Import koneksi database singleton
-import { TransactionType, CategoryOption } from '../generated';
+import { TransactionType, CategoryOption } from '../../dist/generated';
 
 
 export class CategoryService {

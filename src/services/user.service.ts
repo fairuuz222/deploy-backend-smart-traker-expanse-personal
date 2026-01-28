@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import prisma from '../database';
-import { RelationshipStatus } from '../generated/client'; 
+import { RelationshipStatus } from '../../dist/generated'; 
 
 export class UserService {
 

@@ -6,7 +6,7 @@ export declare class WalletService {
         id: string;
         user_id: string;
         name: string;
-        type: import("../generated").$Enums.WalletType;
+        type: import("../../dist/generated/index.js").$Enums.WalletType;
         balance: import("@prisma/client-runtime-utils").Decimal;
         deleted_at: Date | null;
     }[]>;
@@ -19,7 +19,7 @@ export declare class WalletService {
         id: string;
         user_id: string;
         name: string;
-        type: import("../generated").$Enums.WalletType;
+        type: import("../../dist/generated/index.js").$Enums.WalletType;
         balance: import("@prisma/client-runtime-utils").Decimal;
         deleted_at: Date | null;
     }>;
@@ -32,7 +32,7 @@ export declare class WalletService {
         id: string;
         user_id: string;
         name: string;
-        type: import("../generated").$Enums.WalletType;
+        type: import("../../dist/generated/index.js").$Enums.WalletType;
         balance: import("@prisma/client-runtime-utils").Decimal;
         deleted_at: Date | null;
     }>;
@@ -41,7 +41,7 @@ export declare class WalletService {
         id: string;
         user_id: string;
         name: string;
-        type: import("../generated").$Enums.WalletType;
+        type: import("../../dist/generated/index.js").$Enums.WalletType;
         balance: import("@prisma/client-runtime-utils").Decimal;
         deleted_at: Date | null;
     }>;

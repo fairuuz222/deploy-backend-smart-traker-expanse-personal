@@ -1,4 +1,4 @@
-import { PrismaClient, WalletType } from '../generated';
+import { PrismaClient, WalletType } from "../../dist/generated/index.js";
 export declare class WalletRepository {
     private prisma;
     constructor(prisma: PrismaClient);
@@ -7,7 +7,7 @@ export declare class WalletRepository {
         id: string;
         user_id: string;
         name: string;
-        type: import("../generated").$Enums.WalletType;
+        type: import("../../dist/generated/index.js").$Enums.WalletType;
         balance: import("@prisma/client-runtime-utils").Decimal;
         deleted_at: Date | null;
     }[]>;
@@ -16,7 +16,7 @@ export declare class WalletRepository {
         id: string;
         user_id: string;
         name: string;
-        type: import("../generated").$Enums.WalletType;
+        type: import("../../dist/generated/index.js").$Enums.WalletType;
         balance: import("@prisma/client-runtime-utils").Decimal;
         deleted_at: Date | null;
     } | null>;
@@ -30,7 +30,7 @@ export declare class WalletRepository {
         id: string;
         user_id: string;
         name: string;
-        type: import("../generated").$Enums.WalletType;
+        type: import("../../dist/generated/index.js").$Enums.WalletType;
         balance: import("@prisma/client-runtime-utils").Decimal;
         deleted_at: Date | null;
     }>;
@@ -43,7 +43,7 @@ export declare class WalletRepository {
         id: string;
         user_id: string;
         name: string;
-        type: import("../generated").$Enums.WalletType;
+        type: import("../../dist/generated/index.js").$Enums.WalletType;
         balance: import("@prisma/client-runtime-utils").Decimal;
         deleted_at: Date | null;
     }>;
@@ -52,7 +52,7 @@ export declare class WalletRepository {
         id: string;
         user_id: string;
         name: string;
-        type: import("../generated").$Enums.WalletType;
+        type: import("../../dist/generated/index.js").$Enums.WalletType;
         balance: import("@prisma/client-runtime-utils").Decimal;
         deleted_at: Date | null;
     }>;

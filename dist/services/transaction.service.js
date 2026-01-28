@@ -4,7 +4,7 @@ import { BudgetRepository } from "../repositories/budget.repository.js"; // <---
 import { NotificationService } from "./notification.service.js"; // <--- TAMBAHAN
 import { CategoryRepository } from "../repositories/category.repository.js";
 import prisma from "../database.js";
-import { TransactionType, CategoryOption } from "../generated";
+import { TransactionType, CategoryOption } from "../../dist/generated/index.js";
 export class TransactionService {
     transactionRepo;
     walletRepo;

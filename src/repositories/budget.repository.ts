@@ -1,4 +1,4 @@
-import { PrismaClient, Budget } from '../generated'; 
+import { PrismaClient, Budget } from '../../dist/generated'; 
 
 export class BudgetRepository {
     private prisma: PrismaClient;

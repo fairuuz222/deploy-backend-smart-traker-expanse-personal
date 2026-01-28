@@ -5,7 +5,7 @@ import { NotificationService } from "./notification.service"; // <--- TAMBAHAN
 import { CategoryRepository } from "../repositories/category.repository";
 import prisma from "../database";
 import type { CreateTransactionDTO, UpdateTransactionDTO } from "../validations/transaction.validation"; 
-import { TransactionType, CategoryOption } from "../generated";
+import { TransactionType, CategoryOption } from "../../dist/generated";
 
 export class TransactionService {
     private transactionRepo: TransactionRepository;

@@ -1,7 +1,7 @@
 import { TransactionRepository } from "../repositories/transaction.repository";
 import { WalletRepository } from "../repositories/wallet.repository";
 import prisma from "../database";
-import { TransactionType } from "../generated";
+import { TransactionType } from "../../dist/generated";
 
 
 export class DashboardService {

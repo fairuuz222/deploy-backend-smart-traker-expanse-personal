@@ -1,5 +1,5 @@
 // repositories/wallet.repository.ts
-import { PrismaClient, WalletType } from '../generated'; // Import Enum
+import { PrismaClient, WalletType } from '../../dist/generated'; // Import Enum
 
 export class WalletRepository {
 

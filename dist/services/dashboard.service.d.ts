@@ -20,8 +20,8 @@ export declare class DashboardService {
             };
             category: {
                 id: number;
-                name: import("../generated").$Enums.CategoryOption;
-                type: import("../generated").$Enums.TransactionType;
+                name: import("../../dist/generated/index.js").$Enums.CategoryOption;
+                type: import("../../dist/generated/index.js").$Enums.TransactionType;
             };
             attachments: {
                 created_at: Date;
@@ -35,7 +35,7 @@ export declare class DashboardService {
             id: string;
             user_id: string;
             name: string;
-            type: import("../generated").$Enums.TransactionType;
+            type: import("../../dist/generated/index.js").$Enums.TransactionType;
             deleted_at: Date | null;
             amount: import("@prisma/client-runtime-utils").Decimal;
             note: string | null;

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TransactionType } from "../generated"; // Sesuaikan path
+import { TransactionType } from "../../dist/generated/index.js"; // Sesuaikan path
 // Schema untuk CREATE (TIDAK BERUBAH)
 export const createTransactionSchema = z.object({
     wallet_id: z.string().uuid({ message: "Format Wallet ID tidak valid" }),

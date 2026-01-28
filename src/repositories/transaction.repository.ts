@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma, TransactionType, } from "../generated";
+import { PrismaClient, Prisma, TransactionType, } from "../../dist/generated";
 
 
 export interface TransactionFindAllOptions {
