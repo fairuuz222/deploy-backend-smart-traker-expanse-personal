@@ -21,18 +21,17 @@ export class AiService {
   }
 
   // =================================================================
-  // [HELPER PRIVATE] Ambil Data Profile User (Pekerjaan & Status)
+  // [HELPER PRIVATE] Ambil Data Profile User
   // =================================================================
   private async getUserProfileData(userId: string) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: { profile: true } // Join ke tabel Profile
+      include: { profile: true }
     });
 
     return {
       name: user?.full_name || "User",
       occupation: user?.profile?.occupation || "Umum",
-      // Default ke "SINGLE" jika user belum set status
       relationship: user?.profile?.relationship || "SINGLE"
     };
   }
@@ -41,7 +40,7 @@ export class AiService {
   // 1. FITUR INSIGHT (Analisa Bulanan)
   // =================================================================
   async getFinancialInsight(userId: string) {
-    // 1. CEK CACHE (Nyalakan lagi nanti kalau sudah fix)
+    // 1. CEK CACHE
     const lastInsight = await this.aiRepo.findLatestByUserId(userId);
     if (lastInsight) {
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -55,17 +54,17 @@ export class AiService {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-    // A. Ambil Data User Lengkap (Nama, Pekerjaan, Relationship) 👇
+    // A. Data User
     const userProfile = await this.getUserProfileData(userId);
 
-    // B. Hitung Transaksi (Income & Expense)
+    // B. Transaksi Aggregate
     const { totalIncome, totalExpense } = await this.transactionRepo.getMonthlyAggregates(
       userId,
       startOfMonth,
       endOfMonth
     );
 
-    // C. Ambil Top Boros
+    // C. Top Boros
     const topExpensesRaw = await this.transactionRepo.getTopExpenses(
       userId,
       startOfMonth,
@@ -81,68 +80,71 @@ export class AiService {
       })
     );
 
-    // D. Ambil Budget (Dinamis)
-    const budgetData = await this.budgetRepo.findByMonth(userId, now);
-    let budgetLimit = budgetData ? Number(budgetData.monthly_limit) : 0;
-
-    // Fallback logic
-    if (budgetLimit === 0) {
-      budgetLimit = Number(totalIncome) || 1000000;
+    // D. [UPDATED] Ambil Budget List & Sum Total Limit
+    // Karena budget sekarang bisa banyak (per kategori), kita ambil semua
+    const budgetList = await this.budgetRepo.findAllByMonth(userId, now);
+    
+    // Hitung Total Kapasitas Budget (Global + Semua Kategori)
+    let totalBudgetLimit = 0;
+    
+    if (budgetList.length > 0) {
+        totalBudgetLimit = budgetList.reduce((sum, item) => sum + Number(item.monthly_limit), 0);
     }
 
-    // 3. PANGGIL AI (Gemini) - Dengan Data Profile Lengkap 👇
+    // Fallback logic jika user belum set budget sama sekali
+    if (totalBudgetLimit === 0) {
+      // Asumsi default: Budget ideal = Total Pemasukan (jangan lebih besar pasak daripada tiang)
+      totalBudgetLimit = Number(totalIncome) || 1000000; 
+    }
+
+    // 3. PANGGIL AI
     const aiResult = await this.geminiService.analyzeFinancialHealth({
       userName: userProfile.name,
-      userOccupation: userProfile.occupation,     // Kirim Pekerjaan
-      userRelationship: userProfile.relationship, // Kirim Status Hubungan
+      userOccupation: userProfile.occupation,
+      userRelationship: userProfile.relationship,
       totalIncome,
       totalExpense,
-      budgetLimit,
+      budgetLimit: totalBudgetLimit, // Kirim Total Akumulasi Budget
       topCategories,
     });
 
     // 4. SIMPAN HASIL
-    const savedData = await this.aiRepo.create({
+    return await this.aiRepo.create({
       user_id: userId,
       score: aiResult.score,
       status: aiResult.status,
       message: aiResult.message,
       tips: aiResult.tips
     });
-
-    return savedData;
   }
 
   // =================================================================
   // 2. FITUR CHATBOT
   // =================================================================
   async chatWithAi(userId: string, message: string) {
-    // 1. DATA PREPARATION
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-    // A. Ambil Data User (Pekerjaan & Status) 👇
     const userProfile = await this.getUserProfileData(userId);
 
-    // B. Total Income & Expense
     const { totalIncome, totalExpense } = await this.transactionRepo.getMonthlyAggregates(
       userId,
       startOfMonth,
       endOfMonth
     );
 
-    // C. Budget & Sisa
-    const budgetData = await this.budgetRepo.findByMonth(userId, now);
-    const budgetLimit = budgetData ? Number(budgetData.monthly_limit) : 0;
-    const remainingBudget = budgetLimit > 0
-      ? budgetLimit - totalExpense
+    // [UPDATED] Hitung Sisa Budget Global/Akumulatif
+    const budgetList = await this.budgetRepo.findAllByMonth(userId, now);
+    const totalBudgetLimit = budgetList.reduce((sum, item) => sum + Number(item.monthly_limit), 0);
+    
+    // Logic sisa: Jika ada budget, kurangi budget. Jika tidak, kurangi income.
+    const remainingBudget = totalBudgetLimit > 0
+      ? totalBudgetLimit - totalExpense
       : totalIncome - totalExpense;
 
-    // D. Transaksi Terakhir
     const recentTransactions = await this.transactionRepo.findRecent(userId, 5);
 
-    // 2. RAKIT CONTEXT STRING
     const transactionListText = recentTransactions.map(t =>
       `- ${t.type} Rp ${Number(t.amount).toLocaleString('id-ID')} (${t.category?.name || 'Lainnya'})`
     ).join('\n');
@@ -154,20 +156,18 @@ export class AiService {
       - Status: ${userProfile.relationship}
       - Pemasukan Bulan Ini: Rp ${totalIncome.toLocaleString('id-ID')}
       - Pengeluaran Bulan Ini: Rp ${totalExpense.toLocaleString('id-ID')}
-      - Sisa Budget: Rp ${remainingBudget.toLocaleString('id-ID')}
+      - Total Budget (Limit): Rp ${totalBudgetLimit.toLocaleString('id-ID')}
+      - Sisa Dana (Safety): Rp ${remainingBudget.toLocaleString('id-ID')}
       
       5 TRANSAKSI TERAKHIR:
       ${transactionListText}
     `;
 
-    // 3. KIRIM KE GEMINI CHAT - Sertakan Occupation & Relationship 👇
-    const reply = await this.geminiService.chatWithFinancialBot(
+    return await this.geminiService.chatWithFinancialBot(
       contextSummary,
       message,
       userProfile.occupation,
       userProfile.relationship
     );
-
-    return reply;
   }
 }

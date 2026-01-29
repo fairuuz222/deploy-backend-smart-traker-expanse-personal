@@ -3,99 +3,21 @@ import { AuthController } from "../controllers/auth.controller.js";
 import { AuthMiddleware } from "../middlewares/auth.middleware.js";
 import { RateLimitMiddleware } from "../middlewares/rateLimiter.middlerware.js";
 const router = Router();
-// 1. Instansiasi Class
 const authController = new AuthController();
 const authMiddleware = new AuthMiddleware();
-/**
- * @swagger
- * tags:
- *   - name: Auth
- *     description: Autentikasi dan otorisasi user
- */
-/**
- * @swagger
- * /auth/register:
- *   post:
- *     tags: [Auth]
- *     summary: Register user baru
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - fullName
- *               - email
- *               - password
- *             properties:
- *               fullName:
- *                 type: string
- *                 example: Fairuuz
- *               email:
- *                 type: string
- *                 format: email
- *                 example: fairuuz@mail.com
- *               password:
- *                 type: string
- *                 example: password123
- *     responses:
- *       201:
- *         description: Register berhasil
- *       400:
- *         description: Validasi gagal
- */
+// --- PUBLIC ROUTES (Akses Tanpa Token) ---
 router.post("/register", RateLimitMiddleware.authLimiter, authController.register);
-/**
- * @swagger
- * /auth/login:
- *   post:
- *     tags: [Auth]
- *     summary: Login user
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 example: fairuuz@mail.com
- *               password:
- *                 type: string
- *                 example: password123
- *     responses:
- *       200:
- *         description: Login berhasil
- *       401:
- *         description: Email atau password salah
- */
-router.post("/login", RateLimitMiddleware.authLimiter, authController.login);
 router.post("/verify-otp", RateLimitMiddleware.authLimiter, authController.verifyOtp);
-/**
- * @swagger
- * /auth/me:
- *   get:
- *     tags: [Auth]
- *     summary: Ambil data user yang sedang login
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Data user berhasil diambil
- *       401:
- *         description: Unauthorized
- */
-router.get("/me", authMiddleware.handle, authController.me);
+router.post("/login", RateLimitMiddleware.authLimiter, authController.login);
 router.post("/resend-otp", RateLimitMiddleware.authLimiter, authController.resendOtp);
-router.post("/forgot-password", RateLimitMiddleware.authLimiter, authController.forgotPassword // Langsung panggil method
-);
-router.post("/reset-password", RateLimitMiddleware.authLimiter, authController.resetPassword // Langsung panggil method
-);
+router.post("/forgot-password", RateLimitMiddleware.authLimiter, authController.forgotPassword);
+router.post("/reset-password", RateLimitMiddleware.authLimiter, authController.resetPassword);
+// --- PROTECTED ROUTES (Butuh Token) ---
+router.use(authMiddleware.handle);
+// 7. Get Profile Data
+router.get("/me", authController.me);
+// 8. Change Password
+// Sekarang aman karena sudah melewati "Gerbang" di atas
+router.post("/change-password", RateLimitMiddleware.authLimiter, authController.changePassword);
 export default router;
 //# sourceMappingURL=auth.routes.js.map

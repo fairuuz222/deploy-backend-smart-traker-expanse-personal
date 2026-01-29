@@ -4,6 +4,8 @@ export declare const config: {
     readonly NODE_ENV: string;
     readonly DATABASE_URL: string | undefined;
     readonly JWT_SECRET: string;
+    readonly GEMINI_API_KEY: string | undefined;
+    readonly BREVO_API_KEY: string | undefined;
 };
 export default config;
 //# sourceMappingURL=env.d.ts.map

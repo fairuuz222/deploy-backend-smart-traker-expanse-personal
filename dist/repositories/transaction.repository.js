@@ -159,17 +159,23 @@ export class TransactionRepository {
             take: limit, // Ambil 3 teratas
         });
     }
-    async sumExpenseByMonth(userId, startDate, endDate) {
+    async sumExpenseByMonth(userId, startDate, endDate, categoryId) {
+        // Siapkan filter dasar
+        const whereClause = {
+            user_id: userId,
+            type: 'EXPENSE',
+            deleted_at: null,
+            transaction_date: {
+                gte: startDate,
+                lte: endDate
+            }
+        };
+        // Jika ada categoryId, filter lebih spesifik
+        if (categoryId) {
+            whereClause.category_id = categoryId;
+        }
         const result = await this.prisma.transaction.aggregate({
-            where: {
-                user_id: userId,
-                type: 'EXPENSE',
-                deleted_at: null,
-                transaction_date: {
-                    gte: startDate,
-                    lte: endDate
-                }
-            },
+            where: whereClause,
             _sum: {
                 amount: true
             }
@@ -177,10 +183,10 @@ export class TransactionRepository {
         // Jika null (belum ada transaksi), kembalikan 0
         return Number(result._sum.amount || 0);
     }
-    async findRecent(useId, limit) {
+    async findRecent(userId, limit) {
         return await this.prisma.transaction.findMany({
             where: {
-                user_id: useId,
+                user_id: userId,
                 deleted_at: null,
             },
             orderBy: {

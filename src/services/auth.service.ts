@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { hashPassword, comparePassword } from '../utils/hash';
 import { ActivityLogService } from './activity-log.service';
 import { ActivityAction } from '../types/activity.types';
-// Import yang baru:
 import { OtpRepository } from '../repositories/otp.repository';
 import { MailService } from './mail.service';
 
@@ -14,11 +13,14 @@ export class AuthService {
 
     constructor() {
         this.activityLogService = new ActivityLogService();
-        // Inject prisma client ke repository sesuai pola kamu
         this.otpRepository = new OtpRepository(prisma);
         this.mailService = new MailService();
     }
 
+    /**
+     * TAHAP 1: REQUEST REGISTER
+     * Logic: Cek email, hash password, simpan data ke tabel OTP, kirim email.
+     */
     async registerUser(data: any) {
         const { fullName, email, password } = data;
 
@@ -26,226 +28,202 @@ export class AuthService {
             throw new Error("Full name, email, and password are required");
         }
 
+        // 1. Cek apakah email sudah terdaftar di tabel User
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
             throw new Error("Email sudah terdaftar");
         }
 
-        const cleanName = fullName.replace(/\s+/g, ' ').toLowerCase();
-        const randomSuffix = Math.floor(100 + Math.random() * 900);
-        const defaultUsername = `${cleanName}${randomSuffix}`;
+        // 2. Hash password di awal supaya aman saat disimpan di payload OTP
         const hashedPassword = await hashPassword(password);
-
-        const newUser = await prisma.user.create({
-            data: {
-                full_name: fullName,
-                email,
-                password: hashedPassword,
-                role: 'USER',
-                profile: { create: { username: defaultUsername } }
-            },
-            select: { id: true, email: true, full_name: true }
-        });
-
-        // --- LOGIC OTP SETELAH REGISTER ---
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // Simpan ke database lewat repo
-        await this.otpRepository.createOtp(newUser.id, otpCode, 'REGISTRATION');
+        // 3. Bersihkan OTP lama untuk email ini & Simpan data registrasi sementara ke tabel OTP
+        await this.otpRepository.deleteOtpsByEmail(email);
+        await this.otpRepository.createRegistrationOtp(email, otpCode, {
+            fullName,
+            password: hashedPassword
+        });
 
-        // Kirim email lewat service
-        await this.mailService.sendOTP(newUser.email, otpCode);
+        // 4. Kirim email
+        await this.mailService.sendOTP(email, otpCode);
 
-        await this.activityLogService.log(
-            newUser.id,
-            ActivityAction.REGISTER,
-            `User registered and OTP sent to: ${email}`
-        );
-
-        return newUser;
+        return {
+            message: "OTP telah dikirim ke email anda. Silakan verifikasi untuk menyelesaikan registrasi.",
+            email
+        };
     }
 
-    // Fungsi tambahan untuk verifikasi OTP saat user input kode di aplikasi
-    async verifyRegistration(userId: string, code: string) {
-        const isValid = await this.otpRepository.findValidOtp(userId, code);
+    /**
+     * TAHAP 2: VERIFY REGISTER (FINALISASI)
+     * Logic: Cek OTP, ambil payload, create User & Profile secara atomik (Transaction).
+     */
+    async verifyRegistration(email: string, code: string) {
+        // 1. Cari & Validasi OTP berdasarkan email
+        const otpRecord = await this.otpRepository.findValidRegistrationOtp(email, code);
 
-        if (!isValid) {
+        if (!otpRecord) {
             throw new Error("Kode OTP salah atau sudah kadaluarsa");
         }
 
-        // Hapus OTP setelah berhasil diverifikasi
-        await this.otpRepository.deleteUserOtps(userId);
+        const payload = otpRecord.payload as any;
 
-        return { message: "Akun berhasil diverifikasi" };
+        // 2. Eksekusi Create User menggunakan Prisma Transaction
+        const newUser = await prisma.$transaction(async (tx) => {
+            const cleanName = payload.fullName.replace(/\s+/g, ' ').toLowerCase();
+            const randomSuffix = Math.floor(100 + Math.random() * 900);
+            const defaultUsername = `${cleanName}${randomSuffix}`;
+
+            // Create User & Profile
+            const user = await tx.user.create({
+                data: {
+                    full_name: payload.fullName,
+                    email: otpRecord.email,
+                    password: payload.password, // Password sudah ter-hash dari registerUser
+                    role: 'USER',
+                    profile: { create: { username: defaultUsername } }
+                }
+            });
+
+            // Hapus OTP pendaftaran setelah berhasil
+            await tx.otp.delete({ where: { id: otpRecord.id } });
+
+            return user;
+        });
+
+        // 3. Log Aktivitas
+        await this.activityLogService.log(
+            newUser.id,
+            ActivityAction.REGISTER,
+            `User account created and verified via email: ${email}`
+        );
+
+        return {
+            id: newUser.id,
+            email: newUser.email,
+            fullName: newUser.full_name
+        };
     }
-
-
 
     async loginUser(data: any) {
         const { email, password } = data;
 
-        // 1. Cek User
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) {
-            throw new Error("Email atau password salah");
-        }
+        if (!user) throw new Error("Email atau password salah");
 
-        // 2. Cek Password
         const isPasswordValid = await comparePassword(password, user.password);
-        if (!isPasswordValid) {
-            throw new Error("Email atau password salah");
-        }
+        if (!isPasswordValid) throw new Error("Email atau password salah");
 
         const token = jwt.sign(
-            {
-                id: user.id,
-                email: user.email,
-                role: user.role
-            },
+            { id: user.id, email: user.email, role: user.role },
             process.env.JWT_SECRET || 'super_secret_key',
             { expiresIn: '1d' }
-        )
-
-        await this.activityLogService.log(
-            user.id,
-            ActivityAction.LOGIN,
-            "User logged in successfully"
         );
+
+        await this.activityLogService.log(user.id, ActivityAction.LOGIN, "User logged in successfully");
 
         return {
             accessToken: token,
-            user: {
-                id: user.id,
-                email: user.email,
-                fullName: user.full_name,
-                role: user.role
-            }
+            user: { id: user.id, email: user.email, fullName: user.full_name, role: user.role }
         };
     }
 
     async resendOtp(email: string) {
-        // 1. Cek apakah user dengan email tersebut ada
-        const user = await prisma.user.findUnique({
-            where: { email }
+        // Cek apakah email sudah jadi user (jika sudah, arahkan ke flow login)
+        const userExists = await prisma.user.findUnique({ where: { email } });
+        if (userExists) throw new Error("Akun ini sudah aktif, silakan login.");
+
+        // Cari record pendaftaran sementara
+        const pendingOtp = await prisma.otp.findFirst({
+            where: { email, type: 'REGISTRATION' },
+            orderBy: { expired_at: 'desc' }
         });
 
-        if (!user) {
-            throw new Error("Email tidak ditemukan");
-        }
+        if (!pendingOtp) throw new Error("Data pendaftaran tidak ditemukan. Silakan register ulang.");
 
-        // 2. Cek apakah user sudah terverifikasi (Opsional: kalau sudah verified ngapain minta OTP lagi?)
-        // if (user.is_verified) {
-        //     throw new Error("Akun ini sudah diverifikasi");
-        // }
-
-        // 3. Hapus OTP lama agar tidak menumpuk (PENTING)
-        // Kita pakai fungsi yang sudah kamu buat di repository
-        await this.otpRepository.deleteUserOtps(user.id);
-
-        // 4. Generate kode baru
         const newOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // 5. Simpan kode baru ke database
-        await this.otpRepository.createOtp(user.id, newOtpCode, 'REGISTRATION');
+        // Update OTP (Bersihkan yang lama, buat yang baru dengan payload yang sama)
+        await this.otpRepository.deleteOtpsByEmail(email);
+        await this.otpRepository.createRegistrationOtp(email, newOtpCode, pendingOtp.payload);
 
-        // 6. Kirim email baru
-        await this.mailService.sendOTP(user.email, newOtpCode);
-
-        // 7. Catat log aktivitas (Opsional tapi bagus buat debugging)
-        await this.activityLogService.log(
-            user.id,
-            ActivityAction.LOGIN, // Atau buat enum baru RESEND_OTP
-            `OTP resent to: ${email}`
-        );
+        await this.mailService.sendOTP(email, newOtpCode);
 
         return { message: "Kode OTP baru berhasil dikirim" };
     }
 
-
-
     async requestPasswordReset(email: string) {
-        // 1. Cek apakah email terdaftar
-        const user = await prisma.user.findUnique({
-            where: { email }
-        });
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) throw new Error("Email tidak ditemukan");
 
-        if (!user) {
-            throw new Error("Email tidak ditemukan");
-        }
-
-        // 2. Bersihkan OTP lama (PENTING: supaya kode lama gak valid lagi)
-        await this.otpRepository.deleteUserOtps(user.id);
-
-        // 3. Generate Kode OTP Baru
+        await this.otpRepository.deleteOtpsByEmail(email);
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // 4. Simpan ke DB dengan tipe 'PASSWORD_RESET' (Biar beda sama register)
-        // Pastikan prisma schema enum kamu mendukung 'PASSWORD_RESET' atau pakai string biasa
-        await this.otpRepository.createOtp(user.id, otpCode, 'PASSWORD_RESET');
+        // Gunakan userId untuk forgot password karena user-nya sudah ada
+        await this.otpRepository.createOtpWithUserId(user.id, email, otpCode, 'PASSWORD_RESET');
 
-        // 5. Kirim Email
-        // Note: Kamu mungkin mau update MailService biar subjectnya "Reset Password" bukan "Registrasi"
-        // Tapi pakai yang ada dulu gapapa.
         await this.mailService.sendOTP(user.email, otpCode);
+        await this.activityLogService.log(user.id, ActivityAction.FORGOT_PASSWORD, `Reset requested for: ${email}`);
 
-        // 6. Log Activity
-        await this.activityLogService.log(
-            user.id,
-            ActivityAction.FORGOT_PASSWORD, // Pastikan tambahkan enum ini di types kamu
-            `Password reset requested for: ${email}`
-        );
-
-        return { message: "Kode OTP untuk reset password telah dikirim ke email" };
+        return { message: "Kode OTP reset password telah dikirim" };
     }
 
-    // TAHAP 2: User input OTP + Password Baru
     async resetPassword(data: any) {
         const { email, code, newPassword, confirmPassword } = data;
 
-        // 1. Validasi Input Dasar
-        if (!email || !code || !newPassword) {
-            throw new Error("Data tidak lengkap");
-        }
+        if (newPassword !== confirmPassword) throw new Error("Password tidak cocok");
 
-        if (newPassword !== confirmPassword) {
-            throw new Error("Password dan konfirmasi password tidak cocok");
-        }
-
-        // 2. Cari User dulu untuk dapat ID-nya
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) {
-            throw new Error("User tidak ditemukan");
-        }
+        if (!user) throw new Error("User tidak ditemukan");
 
-        // 3. Cek apakah OTP Valid (pakai fungsi repo yang sudah ada)
-        // Logic di repo kamu harusnya ngecek: userId cocok? kode cocok? belum expired?
-        const isValidOtp = await this.otpRepository.findValidOtp(user.id, code);
-
-        if (!isValidOtp) {
-            throw new Error("Kode OTP salah atau sudah kadaluarsa");
-        }
-
-        // 4. Hash Password Baru
-        const hashedPassword = await hashPassword(newPassword);
-
-        // 5. Update Password di Database
-        await prisma.user.update({
-            where: { id: user.id },
-            data: { 
-                password: hashedPassword 
+        // Cek OTP khusus untuk reset password
+        const isValidOtp = await prisma.otp.findFirst({
+            where: {
+                user_id: user.id,
+                code: code,
+                type: 'PASSWORD_RESET',
+                expired_at: { gt: new Date() }
             }
         });
 
-        // 6. Hapus OTP (Supaya tidak bisa dipakai ulang)
-        await this.otpRepository.deleteUserOtps(user.id);
+        if (!isValidOtp) throw new Error("Kode OTP salah atau kadaluarsa");
 
-        // 7. Log Activity
-        await this.activityLogService.log(
-            user.id,
-            ActivityAction.RESET_PASSWORD, // Tambahkan enum ini
-            "User successfully changed password via forgot-password flow"
-        );
+        const hashedPassword = await hashPassword(newPassword);
 
-        return { message: "Password berhasil diubah. Silakan login kembali." };
+        await prisma.$transaction([
+            prisma.user.update({ where: { id: user.id }, data: { password: hashedPassword } }),
+            prisma.otp.deleteMany({ where: { user_id: user.id } })
+        ]);
+
+        await this.activityLogService.log(user.id, ActivityAction.RESET_PASSWORD, "Password changed successfully");
+
+        return { message: "Password berhasil diubah. Silakan login." };
+    }
+
+    async changePassword(userId: string, data: any) {
+        const { oldPassword, newPassword, confirmPassword } = data; //
+
+        if (newPassword !== confirmPassword) {
+            throw new Error("Password baru dan konfirmasi tidak cocok");
+        }
+
+        // Cari user berdasarkan ID yang didapat dari token
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (!user) throw new Error("User tidak ditemukan");
+
+        // Bandingkan password lama
+        const isMatch = await comparePassword(oldPassword, user.password);
+        if (!isMatch) throw new Error("Password lama salah");
+
+        // Hash & Update
+        const hashedPassword = await hashPassword(newPassword);
+
+        // Update tanpa me-return seluruh object user (keamanan)
+        await prisma.user.update({
+            where: { id: userId },
+            data: { password: hashedPassword }
+        });
+
+        return { message: "Password updated successfully" };
     }
 }

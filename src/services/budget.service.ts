@@ -1,29 +1,66 @@
 import { BudgetRepository } from "../repositories/budget.repository";
-import prisma from "../database";
+import prisma from "../database"; // Pastikan path instance prisma benar
 
 export class BudgetService {
-    private budgetRepo: BudgetRepository;
+  private budgetRepo: BudgetRepository;
 
-    constructor() {
-        this.budgetRepo = new BudgetRepository(prisma);
-    }
+  constructor() {
+    this.budgetRepo = new BudgetRepository(prisma);
+  }
 
-    async setMonthBudget(userId: string, amount: number) {
-        if (amount < 0) throw new Error("Budget tidak boleh negatif");
+  /**
+   * Set Budget (Logic Bisnis)
+   * Menerima input raw dari Controller dan memproses logic tanggal
+   */
+  async setMonthBudget(
+    userId: string, 
+    amount: number, 
+    month: number, 
+    year: number, 
+    categoryId?: number
+  ) {
+    if (amount < 0) throw new Error("Budget tidak boleh negatif");
 
-        const today = new Date();
-        return await this.budgetRepo.upsertBudget(userId, amount, today);   
-    }
+    // Validasi Bulan (1-12)
+    if (month < 1 || month > 12) throw new Error("Bulan tidak valid");
 
-    async getCurrentBudget(useId: string) {
-        const today = new Date();
-        const budget = await this.budgetRepo.findByMonth(useId, today);
+    // Buat Date Object: (Year, MonthIndex 0-11, Day 1)
+    const targetDate = new Date(year, month - 1, 1);
 
-        return {
-            limit: budget ? Number(budget.monthly_limit) : 0,
-            month: today.getMonth() + 1,
-            year: today.getFullYear()
-        }
-    }
+    // Pastikan categoryId menjadi null jika undefined (untuk Global Budget)
+    const targetCategory = categoryId !== undefined ? categoryId : null;
+
+    return await this.budgetRepo.upsertBudget(userId, amount, targetDate, targetCategory);
+  }
+
+  /**
+   * Get List (Data Mapping)
+   * Mengubah format Database (snake_case & Decimal) ke format Frontend (camelCase & Number)
+   */
+  async getBudgetList(userId: string, month: number, year: number) {
+    // Validasi Bulan
+    if (month < 1 || month > 12) throw new Error("Bulan tidak valid");
+
+    const targetDate = new Date(year, month - 1, 1);
+    
+    const budgets = await this.budgetRepo.findAllByMonth(userId, targetDate);
+    
+    // Mapping response
+    return budgets.map(b => {
+      // Prisma Decimal dikembalikan sebagai Object/String, perlu convert ke Number
+      const limitNumber = Number(b.monthly_limit); 
+
+      return {
+        id: b.id,
+        categoryId: b.category_id, // Kirim ID kategori juga
+        categoryName: b.category ? b.category.name : "Global Budget", 
+        amount: limitNumber, // Frontend property: amount
+        period: 'MONTHLY', // Hardcode sementara karena skema DB monthly
+        month: b.month_year.getMonth() + 1, // Kembalikan ke format 1-12
+        year: b.month_year.getFullYear(),
+        // Note: 'currentSpent' & 'status' biasanya dihitung terpisah via Transaction Aggregation, 
+        // tapi untuk setup Budget dasar, ini cukup.
+      };
+    });
+  }
 }
-

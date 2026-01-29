@@ -195,30 +195,39 @@ export class TransactionRepository {
     });
   }
 
-  async sumExpenseByMonth(userId: string, startDate: Date, endDate: Date): Promise<number> {
+  async sumExpenseByMonth(userId: string, startDate: Date, endDate: Date, categoryId?: number): Promise<number> {
+    
+    // Siapkan filter dasar
+    const whereClause: any = {
+      user_id: userId,
+      type: 'EXPENSE',
+      deleted_at: null,
+      transaction_date: {
+        gte: startDate,
+        lte: endDate
+      }
+    };
+
+    // Jika ada categoryId, filter lebih spesifik
+    if (categoryId) {
+      whereClause.category_id = categoryId;
+    }
+
     const result = await this.prisma.transaction.aggregate({
-      where: {
-        user_id: userId,
-        type: 'EXPENSE',
-        deleted_at: null,
-        transaction_date: {
-          gte: startDate,
-          lte: endDate
-        }
-      },
+      where: whereClause,
       _sum: {
         amount: true
       }
     });
+
     // Jika null (belum ada transaksi), kembalikan 0
     return Number(result._sum.amount || 0);
   }
 
-
-  async findRecent(useId: string, limit: number) {
+  async findRecent(userId: string, limit: number) {
     return await this.prisma.transaction.findMany({
       where: {
-        user_id: useId,
+        user_id: userId,
         deleted_at: null,
       },
       orderBy: {

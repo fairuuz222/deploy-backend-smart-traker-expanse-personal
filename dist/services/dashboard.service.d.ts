@@ -14,14 +14,14 @@ export declare class DashboardService {
             date: string;
         }[];
         recent_transactions: ({
-            wallet: {
-                id: string;
-                name: string;
-            };
             category: {
                 id: number;
                 name: import("../../dist/generated/index.js").$Enums.CategoryOption;
                 type: import("../../dist/generated/index.js").$Enums.TransactionType;
+            };
+            wallet: {
+                id: string;
+                name: string;
             };
             attachments: {
                 created_at: Date;

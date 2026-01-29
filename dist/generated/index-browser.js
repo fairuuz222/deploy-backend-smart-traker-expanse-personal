@@ -139,8 +139,11 @@ exports.Prisma.AttachmentScalarFieldEnum = {
 exports.Prisma.BudgetScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
+  category_id: 'category_id',
   monthly_limit: 'monthly_limit',
-  month_year: 'month_year'
+  month_year: 'month_year',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.CategoryScalarFieldEnum = {
@@ -173,10 +176,12 @@ exports.Prisma.NotificationScalarFieldEnum = {
 
 exports.Prisma.OtpScalarFieldEnum = {
   id: 'id',
-  user_id: 'user_id',
+  email: 'email',
   code: 'code',
   type: 'type',
-  expired_at: 'expired_at'
+  payload: 'payload',
+  expired_at: 'expired_at',
+  user_id: 'user_id'
 };
 
 exports.Prisma.PasswordResetScalarFieldEnum = {
@@ -242,6 +247,11 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -250,6 +260,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.CategoryOption = exports.$Enums.CategoryOption = {
   FOOD_AND_DRINK: 'FOOD_AND_DRINK',

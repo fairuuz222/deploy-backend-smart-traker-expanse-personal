@@ -17,11 +17,24 @@ model Attachment {
 }
 
 model Budget {
-  id            String   @id @default(uuid()) // Diubah ke UUID
-  user_id       String // Foreign Key menjadi String
+  id            String   @id @default(uuid())
+  user_id       String
+  category_id   Int? // <--- Tambahan: Nullable (Bisa null untuk Global Budget)
   monthly_limit Decimal  @db.Decimal
   month_year    DateTime @db.Date
-  user          User     @relation(fields: [user_id], references: [id])
+
+  created_at DateTime @default(now()) @db.Timestamp
+  updated_at DateTime @updatedAt
+
+  // Relasi
+  user     User      @relation(fields: [user_id], references: [id])
+  category Category? @relation(fields: [category_id], references: [id]) // <--- Relasi baru
+
+  // Constraint: 
+  // User tidak boleh punya 2 budget untuk kategori yang sama di bulan yang sama.
+  // Note: Di PostgreSQL standar, unique constraint menganggap NULL berbeda-beda. 
+  // Tapi kita akan handle proteksi duplikasi via logic Repository juga.
+  @@unique([user_id, category_id, month_year])
 }
 
 model Category {
@@ -38,6 +51,7 @@ model Category {
   user         User?         @relation(fields: [user_id], references: [id], onDelete: Cascade)
   // Relasi ke trancsavtion
   transactions Transaction[]
+  budgets      Budget[] // <--- Tambahan: Relasi balik (opsional tapi berguna buat include)
 }
 
 model FinancialInsight {
@@ -68,13 +82,14 @@ model Notification {
 
 model Otp {
   id         Int      @id @default(autoincrement())
-  user_id    String
+  email      String // Digunakan untuk track OTP sebelum user dibuat
   code       String   @db.VarChar(6)
   type       OtpType
+  payload    Json? // Menyimpan {fullName, password} sementara
   expired_at DateTime @db.Timestamp
 
-  // Relasi
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String? // Opsional, baru diisi saat Forgot Password
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model PasswordReset {
@@ -176,7 +191,7 @@ model Wallet {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated"
+  output   = "../../dist/generated"
 }
 
 datasource db {

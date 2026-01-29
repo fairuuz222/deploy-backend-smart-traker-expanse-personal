@@ -2049,10 +2049,12 @@ export namespace Prisma {
 
   export type CategoryCountOutputType = {
     transactions: number
+    budgets: number
   }
 
   export type CategoryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     transactions?: boolean | CategoryCountOutputTypeCountTransactionsArgs
+    budgets?: boolean | CategoryCountOutputTypeCountBudgetsArgs
   }
 
   // Custom InputTypes
@@ -2071,6 +2073,13 @@ export namespace Prisma {
    */
   export type CategoryCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionWhereInput
+  }
+
+  /**
+   * CategoryCountOutputType without action
+   */
+  export type CategoryCountOutputTypeCountBudgetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BudgetWhereInput
   }
 
 
@@ -4397,63 +4406,85 @@ export namespace Prisma {
   }
 
   export type BudgetAvgAggregateOutputType = {
+    category_id: number | null
     monthly_limit: Decimal | null
   }
 
   export type BudgetSumAggregateOutputType = {
+    category_id: number | null
     monthly_limit: Decimal | null
   }
 
   export type BudgetMinAggregateOutputType = {
     id: string | null
     user_id: string | null
+    category_id: number | null
     monthly_limit: Decimal | null
     month_year: Date | null
+    created_at: Date | null
+    updated_at: Date | null
   }
 
   export type BudgetMaxAggregateOutputType = {
     id: string | null
     user_id: string | null
+    category_id: number | null
     monthly_limit: Decimal | null
     month_year: Date | null
+    created_at: Date | null
+    updated_at: Date | null
   }
 
   export type BudgetCountAggregateOutputType = {
     id: number
     user_id: number
+    category_id: number
     monthly_limit: number
     month_year: number
+    created_at: number
+    updated_at: number
     _all: number
   }
 
 
   export type BudgetAvgAggregateInputType = {
+    category_id?: true
     monthly_limit?: true
   }
 
   export type BudgetSumAggregateInputType = {
+    category_id?: true
     monthly_limit?: true
   }
 
   export type BudgetMinAggregateInputType = {
     id?: true
     user_id?: true
+    category_id?: true
     monthly_limit?: true
     month_year?: true
+    created_at?: true
+    updated_at?: true
   }
 
   export type BudgetMaxAggregateInputType = {
     id?: true
     user_id?: true
+    category_id?: true
     monthly_limit?: true
     month_year?: true
+    created_at?: true
+    updated_at?: true
   }
 
   export type BudgetCountAggregateInputType = {
     id?: true
     user_id?: true
+    category_id?: true
     monthly_limit?: true
     month_year?: true
+    created_at?: true
+    updated_at?: true
     _all?: true
   }
 
@@ -4546,8 +4577,11 @@ export namespace Prisma {
   export type BudgetGroupByOutputType = {
     id: string
     user_id: string
+    category_id: number | null
     monthly_limit: Decimal
     month_year: Date
+    created_at: Date
+    updated_at: Date
     _count: BudgetCountAggregateOutputType | null
     _avg: BudgetAvgAggregateOutputType | null
     _sum: BudgetSumAggregateOutputType | null
@@ -4572,55 +4606,77 @@ export namespace Prisma {
   export type BudgetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     user_id?: boolean
+    category_id?: boolean
     monthly_limit?: boolean
     month_year?: boolean
+    created_at?: boolean
+    updated_at?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
+    category?: boolean | Budget$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["budget"]>
 
   export type BudgetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     user_id?: boolean
+    category_id?: boolean
     monthly_limit?: boolean
     month_year?: boolean
+    created_at?: boolean
+    updated_at?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
+    category?: boolean | Budget$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["budget"]>
 
   export type BudgetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     user_id?: boolean
+    category_id?: boolean
     monthly_limit?: boolean
     month_year?: boolean
+    created_at?: boolean
+    updated_at?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
+    category?: boolean | Budget$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["budget"]>
 
   export type BudgetSelectScalar = {
     id?: boolean
     user_id?: boolean
+    category_id?: boolean
     monthly_limit?: boolean
     month_year?: boolean
+    created_at?: boolean
+    updated_at?: boolean
   }
 
-  export type BudgetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "monthly_limit" | "month_year", ExtArgs["result"]["budget"]>
+  export type BudgetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "category_id" | "monthly_limit" | "month_year" | "created_at" | "updated_at", ExtArgs["result"]["budget"]>
   export type BudgetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    category?: boolean | Budget$categoryArgs<ExtArgs>
   }
   export type BudgetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    category?: boolean | Budget$categoryArgs<ExtArgs>
   }
   export type BudgetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    category?: boolean | Budget$categoryArgs<ExtArgs>
   }
 
   export type $BudgetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Budget"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
+      category: Prisma.$CategoryPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       user_id: string
+      category_id: number | null
       monthly_limit: Prisma.Decimal
       month_year: Date
+      created_at: Date
+      updated_at: Date
     }, ExtArgs["result"]["budget"]>
     composites: {}
   }
@@ -5016,6 +5072,7 @@ export namespace Prisma {
   export interface Prisma__BudgetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    category<T extends Budget$categoryArgs<ExtArgs> = {}>(args?: Subset<T, Budget$categoryArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5047,8 +5104,11 @@ export namespace Prisma {
   interface BudgetFieldRefs {
     readonly id: FieldRef<"Budget", 'String'>
     readonly user_id: FieldRef<"Budget", 'String'>
+    readonly category_id: FieldRef<"Budget", 'Int'>
     readonly monthly_limit: FieldRef<"Budget", 'Decimal'>
     readonly month_year: FieldRef<"Budget", 'DateTime'>
+    readonly created_at: FieldRef<"Budget", 'DateTime'>
+    readonly updated_at: FieldRef<"Budget", 'DateTime'>
   }
     
 
@@ -5445,6 +5505,25 @@ export namespace Prisma {
   }
 
   /**
+   * Budget.category
+   */
+  export type Budget$categoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    where?: CategoryWhereInput
+  }
+
+  /**
    * Budget without action
    */
   export type BudgetDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5671,6 +5750,7 @@ export namespace Prisma {
     user_id?: boolean
     user?: boolean | Category$userArgs<ExtArgs>
     transactions?: boolean | Category$transactionsArgs<ExtArgs>
+    budgets?: boolean | Category$budgetsArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
@@ -5707,6 +5787,7 @@ export namespace Prisma {
   export type CategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Category$userArgs<ExtArgs>
     transactions?: boolean | Category$transactionsArgs<ExtArgs>
+    budgets?: boolean | Category$budgetsArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5721,6 +5802,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs> | null
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      budgets: Prisma.$BudgetPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -6125,6 +6207,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends Category$userArgs<ExtArgs> = {}>(args?: Subset<T, Category$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     transactions<T extends Category$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Category$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    budgets<T extends Category$budgetsArgs<ExtArgs> = {}>(args?: Subset<T, Category$budgetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BudgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6596,6 +6679,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Category.budgets
+   */
+  export type Category$budgetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Budget
+     */
+    select?: BudgetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Budget
+     */
+    omit?: BudgetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BudgetInclude<ExtArgs> | null
+    where?: BudgetWhereInput
+    orderBy?: BudgetOrderByWithRelationInput | BudgetOrderByWithRelationInput[]
+    cursor?: BudgetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BudgetScalarFieldEnum | BudgetScalarFieldEnum[]
   }
 
   /**
@@ -8858,26 +8965,30 @@ export namespace Prisma {
 
   export type OtpMinAggregateOutputType = {
     id: number | null
-    user_id: string | null
+    email: string | null
     code: string | null
     type: $Enums.OtpType | null
     expired_at: Date | null
+    user_id: string | null
   }
 
   export type OtpMaxAggregateOutputType = {
     id: number | null
-    user_id: string | null
+    email: string | null
     code: string | null
     type: $Enums.OtpType | null
     expired_at: Date | null
+    user_id: string | null
   }
 
   export type OtpCountAggregateOutputType = {
     id: number
-    user_id: number
+    email: number
     code: number
     type: number
+    payload: number
     expired_at: number
+    user_id: number
     _all: number
   }
 
@@ -8892,26 +9003,30 @@ export namespace Prisma {
 
   export type OtpMinAggregateInputType = {
     id?: true
-    user_id?: true
+    email?: true
     code?: true
     type?: true
     expired_at?: true
+    user_id?: true
   }
 
   export type OtpMaxAggregateInputType = {
     id?: true
-    user_id?: true
+    email?: true
     code?: true
     type?: true
     expired_at?: true
+    user_id?: true
   }
 
   export type OtpCountAggregateInputType = {
     id?: true
-    user_id?: true
+    email?: true
     code?: true
     type?: true
+    payload?: true
     expired_at?: true
+    user_id?: true
     _all?: true
   }
 
@@ -9003,10 +9118,12 @@ export namespace Prisma {
 
   export type OtpGroupByOutputType = {
     id: number
-    user_id: string
+    email: string
     code: string
     type: $Enums.OtpType
+    payload: JsonValue | null
     expired_at: Date
+    user_id: string | null
     _count: OtpCountAggregateOutputType | null
     _avg: OtpAvgAggregateOutputType | null
     _sum: OtpSumAggregateOutputType | null
@@ -9030,61 +9147,71 @@ export namespace Prisma {
 
   export type OtpSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    user_id?: boolean
+    email?: boolean
     code?: boolean
     type?: boolean
+    payload?: boolean
     expired_at?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user_id?: boolean
+    user?: boolean | Otp$userArgs<ExtArgs>
   }, ExtArgs["result"]["otp"]>
 
   export type OtpSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    user_id?: boolean
+    email?: boolean
     code?: boolean
     type?: boolean
+    payload?: boolean
     expired_at?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user_id?: boolean
+    user?: boolean | Otp$userArgs<ExtArgs>
   }, ExtArgs["result"]["otp"]>
 
   export type OtpSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    user_id?: boolean
+    email?: boolean
     code?: boolean
     type?: boolean
+    payload?: boolean
     expired_at?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user_id?: boolean
+    user?: boolean | Otp$userArgs<ExtArgs>
   }, ExtArgs["result"]["otp"]>
 
   export type OtpSelectScalar = {
     id?: boolean
-    user_id?: boolean
+    email?: boolean
     code?: boolean
     type?: boolean
+    payload?: boolean
     expired_at?: boolean
+    user_id?: boolean
   }
 
-  export type OtpOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "code" | "type" | "expired_at", ExtArgs["result"]["otp"]>
+  export type OtpOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "code" | "type" | "payload" | "expired_at" | "user_id", ExtArgs["result"]["otp"]>
   export type OtpInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | Otp$userArgs<ExtArgs>
   }
   export type OtpIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | Otp$userArgs<ExtArgs>
   }
   export type OtpIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | Otp$userArgs<ExtArgs>
   }
 
   export type $OtpPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Otp"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      user_id: string
+      email: string
       code: string
       type: $Enums.OtpType
+      payload: Prisma.JsonValue | null
       expired_at: Date
+      user_id: string | null
     }, ExtArgs["result"]["otp"]>
     composites: {}
   }
@@ -9479,7 +9606,7 @@ export namespace Prisma {
    */
   export interface Prisma__OtpClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends Otp$userArgs<ExtArgs> = {}>(args?: Subset<T, Otp$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9510,10 +9637,12 @@ export namespace Prisma {
    */
   interface OtpFieldRefs {
     readonly id: FieldRef<"Otp", 'Int'>
-    readonly user_id: FieldRef<"Otp", 'String'>
+    readonly email: FieldRef<"Otp", 'String'>
     readonly code: FieldRef<"Otp", 'String'>
     readonly type: FieldRef<"Otp", 'OtpType'>
+    readonly payload: FieldRef<"Otp", 'Json'>
     readonly expired_at: FieldRef<"Otp", 'DateTime'>
+    readonly user_id: FieldRef<"Otp", 'String'>
   }
     
 
@@ -9907,6 +10036,25 @@ export namespace Prisma {
      * Limit how many Otps to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Otp.user
+   */
+  export type Otp$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -16787,8 +16935,11 @@ export namespace Prisma {
   export const BudgetScalarFieldEnum: {
     id: 'id',
     user_id: 'user_id',
+    category_id: 'category_id',
     monthly_limit: 'monthly_limit',
-    month_year: 'month_year'
+    month_year: 'month_year',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
   };
 
   export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof BudgetScalarFieldEnum]
@@ -16833,10 +16984,12 @@ export namespace Prisma {
 
   export const OtpScalarFieldEnum: {
     id: 'id',
-    user_id: 'user_id',
+    email: 'email',
     code: 'code',
     type: 'type',
-    expired_at: 'expired_at'
+    payload: 'payload',
+    expired_at: 'expired_at',
+    user_id: 'user_id'
   };
 
   export type OtpScalarFieldEnum = (typeof OtpScalarFieldEnum)[keyof typeof OtpScalarFieldEnum]
@@ -16926,6 +17079,14 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -16940,6 +17101,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -17049,6 +17219,20 @@ export namespace Prisma {
    * Reference to a field of type 'OtpType[]'
    */
   export type ListEnumOtpTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OtpType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -17229,35 +17413,51 @@ export namespace Prisma {
     NOT?: BudgetWhereInput | BudgetWhereInput[]
     id?: StringFilter<"Budget"> | string
     user_id?: StringFilter<"Budget"> | string
+    category_id?: IntNullableFilter<"Budget"> | number | null
     monthly_limit?: DecimalFilter<"Budget"> | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeFilter<"Budget"> | Date | string
+    created_at?: DateTimeFilter<"Budget"> | Date | string
+    updated_at?: DateTimeFilter<"Budget"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
   }
 
   export type BudgetOrderByWithRelationInput = {
     id?: SortOrder
     user_id?: SortOrder
+    category_id?: SortOrderInput | SortOrder
     monthly_limit?: SortOrder
     month_year?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
     user?: UserOrderByWithRelationInput
+    category?: CategoryOrderByWithRelationInput
   }
 
   export type BudgetWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    user_id_category_id_month_year?: BudgetUser_idCategory_idMonth_yearCompoundUniqueInput
     AND?: BudgetWhereInput | BudgetWhereInput[]
     OR?: BudgetWhereInput[]
     NOT?: BudgetWhereInput | BudgetWhereInput[]
     user_id?: StringFilter<"Budget"> | string
+    category_id?: IntNullableFilter<"Budget"> | number | null
     monthly_limit?: DecimalFilter<"Budget"> | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeFilter<"Budget"> | Date | string
+    created_at?: DateTimeFilter<"Budget"> | Date | string
+    updated_at?: DateTimeFilter<"Budget"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+    category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
+  }, "id" | "user_id_category_id_month_year">
 
   export type BudgetOrderByWithAggregationInput = {
     id?: SortOrder
     user_id?: SortOrder
+    category_id?: SortOrderInput | SortOrder
     monthly_limit?: SortOrder
     month_year?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
     _count?: BudgetCountOrderByAggregateInput
     _avg?: BudgetAvgOrderByAggregateInput
     _max?: BudgetMaxOrderByAggregateInput
@@ -17271,8 +17471,11 @@ export namespace Prisma {
     NOT?: BudgetScalarWhereWithAggregatesInput | BudgetScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Budget"> | string
     user_id?: StringWithAggregatesFilter<"Budget"> | string
+    category_id?: IntNullableWithAggregatesFilter<"Budget"> | number | null
     monthly_limit?: DecimalWithAggregatesFilter<"Budget"> | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeWithAggregatesFilter<"Budget"> | Date | string
+    created_at?: DateTimeWithAggregatesFilter<"Budget"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Budget"> | Date | string
   }
 
   export type CategoryWhereInput = {
@@ -17287,6 +17490,7 @@ export namespace Prisma {
     user_id?: StringNullableFilter<"Category"> | string | null
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     transactions?: TransactionListRelationFilter
+    budgets?: BudgetListRelationFilter
   }
 
   export type CategoryOrderByWithRelationInput = {
@@ -17298,6 +17502,7 @@ export namespace Prisma {
     user_id?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     transactions?: TransactionOrderByRelationAggregateInput
+    budgets?: BudgetOrderByRelationAggregateInput
   }
 
   export type CategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -17312,6 +17517,7 @@ export namespace Prisma {
     user_id?: StringNullableFilter<"Category"> | string | null
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     transactions?: TransactionListRelationFilter
+    budgets?: BudgetListRelationFilter
   }, "id">
 
   export type CategoryOrderByWithAggregationInput = {
@@ -17474,19 +17680,23 @@ export namespace Prisma {
     OR?: OtpWhereInput[]
     NOT?: OtpWhereInput | OtpWhereInput[]
     id?: IntFilter<"Otp"> | number
-    user_id?: StringFilter<"Otp"> | string
+    email?: StringFilter<"Otp"> | string
     code?: StringFilter<"Otp"> | string
     type?: EnumOtpTypeFilter<"Otp"> | $Enums.OtpType
+    payload?: JsonNullableFilter<"Otp">
     expired_at?: DateTimeFilter<"Otp"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    user_id?: StringNullableFilter<"Otp"> | string | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type OtpOrderByWithRelationInput = {
     id?: SortOrder
-    user_id?: SortOrder
+    email?: SortOrder
     code?: SortOrder
     type?: SortOrder
+    payload?: SortOrderInput | SortOrder
     expired_at?: SortOrder
+    user_id?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -17495,19 +17705,23 @@ export namespace Prisma {
     AND?: OtpWhereInput | OtpWhereInput[]
     OR?: OtpWhereInput[]
     NOT?: OtpWhereInput | OtpWhereInput[]
-    user_id?: StringFilter<"Otp"> | string
+    email?: StringFilter<"Otp"> | string
     code?: StringFilter<"Otp"> | string
     type?: EnumOtpTypeFilter<"Otp"> | $Enums.OtpType
+    payload?: JsonNullableFilter<"Otp">
     expired_at?: DateTimeFilter<"Otp"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    user_id?: StringNullableFilter<"Otp"> | string | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type OtpOrderByWithAggregationInput = {
     id?: SortOrder
-    user_id?: SortOrder
+    email?: SortOrder
     code?: SortOrder
     type?: SortOrder
+    payload?: SortOrderInput | SortOrder
     expired_at?: SortOrder
+    user_id?: SortOrderInput | SortOrder
     _count?: OtpCountOrderByAggregateInput
     _avg?: OtpAvgOrderByAggregateInput
     _max?: OtpMaxOrderByAggregateInput
@@ -17520,10 +17734,12 @@ export namespace Prisma {
     OR?: OtpScalarWhereWithAggregatesInput[]
     NOT?: OtpScalarWhereWithAggregatesInput | OtpScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Otp"> | number
-    user_id?: StringWithAggregatesFilter<"Otp"> | string
+    email?: StringWithAggregatesFilter<"Otp"> | string
     code?: StringWithAggregatesFilter<"Otp"> | string
     type?: EnumOtpTypeWithAggregatesFilter<"Otp"> | $Enums.OtpType
+    payload?: JsonNullableWithAggregatesFilter<"Otp">
     expired_at?: DateTimeWithAggregatesFilter<"Otp"> | Date | string
+    user_id?: StringNullableWithAggregatesFilter<"Otp"> | string | null
   }
 
   export type PasswordResetWhereInput = {
@@ -18053,48 +18269,68 @@ export namespace Prisma {
     id?: string
     monthly_limit: Decimal | DecimalJsLike | number | string
     month_year: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
     user: UserCreateNestedOneWithoutBudgetsInput
+    category?: CategoryCreateNestedOneWithoutBudgetsInput
   }
 
   export type BudgetUncheckedCreateInput = {
     id?: string
     user_id: string
+    category_id?: number | null
     monthly_limit: Decimal | DecimalJsLike | number | string
     month_year: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type BudgetUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBudgetsNestedInput
+    category?: CategoryUpdateOneWithoutBudgetsNestedInput
   }
 
   export type BudgetUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableIntFieldUpdateOperationsInput | number | null
     monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BudgetCreateManyInput = {
     id?: string
     user_id: string
+    category_id?: number | null
     monthly_limit: Decimal | DecimalJsLike | number | string
     month_year: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type BudgetUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BudgetUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableIntFieldUpdateOperationsInput | number | null
     monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryCreateInput = {
@@ -18104,6 +18340,7 @@ export namespace Prisma {
     deleted_at?: Date | string | null
     user?: UserCreateNestedOneWithoutCotegoryInput
     transactions?: TransactionCreateNestedManyWithoutCategoryInput
+    budgets?: BudgetCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateInput = {
@@ -18114,6 +18351,7 @@ export namespace Prisma {
     deleted_at?: Date | string | null
     user_id?: string | null
     transactions?: TransactionUncheckedCreateNestedManyWithoutCategoryInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUpdateInput = {
@@ -18123,6 +18361,7 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneWithoutCotegoryNestedInput
     transactions?: TransactionUpdateManyWithoutCategoryNestedInput
+    budgets?: BudgetUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateInput = {
@@ -18133,6 +18372,7 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user_id?: NullableStringFieldUpdateOperationsInput | string | null
     transactions?: TransactionUncheckedUpdateManyWithoutCategoryNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryCreateManyInput = {
@@ -18289,55 +18529,69 @@ export namespace Prisma {
   }
 
   export type OtpCreateInput = {
+    email: string
     code: string
     type: $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at: Date | string
-    user: UserCreateNestedOneWithoutOtpsInput
+    user?: UserCreateNestedOneWithoutOtpsInput
   }
 
   export type OtpUncheckedCreateInput = {
     id?: number
-    user_id: string
+    email: string
     code: string
     type: $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at: Date | string
+    user_id?: string | null
   }
 
   export type OtpUpdateInput = {
+    email?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
     type?: EnumOtpTypeFieldUpdateOperationsInput | $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutOtpsNestedInput
+    user?: UserUpdateOneWithoutOtpsNestedInput
   }
 
   export type OtpUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    user_id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
     type?: EnumOtpTypeFieldUpdateOperationsInput | $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OtpCreateManyInput = {
     id?: number
-    user_id: string
+    email: string
     code: string
     type: $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at: Date | string
+    user_id?: string | null
   }
 
   export type OtpUpdateManyMutationInput = {
+    email?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
     type?: EnumOtpTypeFieldUpdateOperationsInput | $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OtpUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    user_id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
     type?: EnumOtpTypeFieldUpdateOperationsInput | $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PasswordResetCreateInput = {
@@ -18971,6 +19225,17 @@ export namespace Prisma {
     created_at?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type DecimalFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -18982,33 +19247,71 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
+  export type CategoryNullableScalarRelationFilter = {
+    is?: CategoryWhereInput | null
+    isNot?: CategoryWhereInput | null
+  }
+
+  export type BudgetUser_idCategory_idMonth_yearCompoundUniqueInput = {
+    user_id: string
+    category_id: number
+    month_year: Date | string
+  }
+
   export type BudgetCountOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+    category_id?: SortOrder
     monthly_limit?: SortOrder
     month_year?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type BudgetAvgOrderByAggregateInput = {
+    category_id?: SortOrder
     monthly_limit?: SortOrder
   }
 
   export type BudgetMaxOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+    category_id?: SortOrder
     monthly_limit?: SortOrder
     month_year?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type BudgetMinOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+    category_id?: SortOrder
     monthly_limit?: SortOrder
     month_year?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type BudgetSumOrderByAggregateInput = {
+    category_id?: SortOrder
     monthly_limit?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
@@ -19063,7 +19366,17 @@ export namespace Prisma {
     none?: TransactionWhereInput
   }
 
+  export type BudgetListRelationFilter = {
+    every?: BudgetWhereInput
+    some?: BudgetWhereInput
+    none?: BudgetWhereInput
+  }
+
   export type TransactionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BudgetOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -19234,13 +19547,38 @@ export namespace Prisma {
     notIn?: $Enums.OtpType[] | ListEnumOtpTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumOtpTypeFilter<$PrismaModel> | $Enums.OtpType
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type OtpCountOrderByAggregateInput = {
     id?: SortOrder
-    user_id?: SortOrder
+    email?: SortOrder
     code?: SortOrder
     type?: SortOrder
+    payload?: SortOrder
     expired_at?: SortOrder
+    user_id?: SortOrder
   }
 
   export type OtpAvgOrderByAggregateInput = {
@@ -19249,18 +19587,20 @@ export namespace Prisma {
 
   export type OtpMaxOrderByAggregateInput = {
     id?: SortOrder
-    user_id?: SortOrder
+    email?: SortOrder
     code?: SortOrder
     type?: SortOrder
     expired_at?: SortOrder
+    user_id?: SortOrder
   }
 
   export type OtpMinOrderByAggregateInput = {
     id?: SortOrder
-    user_id?: SortOrder
+    email?: SortOrder
     code?: SortOrder
     type?: SortOrder
     expired_at?: SortOrder
+    user_id?: SortOrder
   }
 
   export type OtpSumOrderByAggregateInput = {
@@ -19275,6 +19615,32 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumOtpTypeFilter<$PrismaModel>
     _max?: NestedEnumOtpTypeFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type PasswordResetCountOrderByAggregateInput = {
@@ -19467,12 +19833,6 @@ export namespace Prisma {
     none?: WalletWhereInput
   }
 
-  export type BudgetListRelationFilter = {
-    every?: BudgetWhereInput
-    some?: BudgetWhereInput
-    none?: BudgetWhereInput
-  }
-
   export type NotificationListRelationFilter = {
     every?: NotificationWhereInput
     some?: NotificationWhereInput
@@ -19510,10 +19870,6 @@ export namespace Prisma {
   }
 
   export type WalletOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type BudgetOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -19687,6 +20043,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type CategoryCreateNestedOneWithoutBudgetsInput = {
+    create?: XOR<CategoryCreateWithoutBudgetsInput, CategoryUncheckedCreateWithoutBudgetsInput>
+    connectOrCreate?: CategoryCreateOrConnectWithoutBudgetsInput
+    connect?: CategoryWhereUniqueInput
+  }
+
   export type DecimalFieldUpdateOperationsInput = {
     set?: Decimal | DecimalJsLike | number | string
     increment?: Decimal | DecimalJsLike | number | string
@@ -19703,6 +20065,24 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBudgetsInput, UserUpdateWithoutBudgetsInput>, UserUncheckedUpdateWithoutBudgetsInput>
   }
 
+  export type CategoryUpdateOneWithoutBudgetsNestedInput = {
+    create?: XOR<CategoryCreateWithoutBudgetsInput, CategoryUncheckedCreateWithoutBudgetsInput>
+    connectOrCreate?: CategoryCreateOrConnectWithoutBudgetsInput
+    upsert?: CategoryUpsertWithoutBudgetsInput
+    disconnect?: CategoryWhereInput | boolean
+    delete?: CategoryWhereInput | boolean
+    connect?: CategoryWhereUniqueInput
+    update?: XOR<XOR<CategoryUpdateToOneWithWhereWithoutBudgetsInput, CategoryUpdateWithoutBudgetsInput>, CategoryUncheckedUpdateWithoutBudgetsInput>
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type UserCreateNestedOneWithoutCotegoryInput = {
     create?: XOR<UserCreateWithoutCotegoryInput, UserUncheckedCreateWithoutCotegoryInput>
     connectOrCreate?: UserCreateOrConnectWithoutCotegoryInput
@@ -19716,11 +20096,25 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type BudgetCreateNestedManyWithoutCategoryInput = {
+    create?: XOR<BudgetCreateWithoutCategoryInput, BudgetUncheckedCreateWithoutCategoryInput> | BudgetCreateWithoutCategoryInput[] | BudgetUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: BudgetCreateOrConnectWithoutCategoryInput | BudgetCreateOrConnectWithoutCategoryInput[]
+    createMany?: BudgetCreateManyCategoryInputEnvelope
+    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+  }
+
   export type TransactionUncheckedCreateNestedManyWithoutCategoryInput = {
     create?: XOR<TransactionCreateWithoutCategoryInput, TransactionUncheckedCreateWithoutCategoryInput> | TransactionCreateWithoutCategoryInput[] | TransactionUncheckedCreateWithoutCategoryInput[]
     connectOrCreate?: TransactionCreateOrConnectWithoutCategoryInput | TransactionCreateOrConnectWithoutCategoryInput[]
     createMany?: TransactionCreateManyCategoryInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type BudgetUncheckedCreateNestedManyWithoutCategoryInput = {
+    create?: XOR<BudgetCreateWithoutCategoryInput, BudgetUncheckedCreateWithoutCategoryInput> | BudgetCreateWithoutCategoryInput[] | BudgetUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: BudgetCreateOrConnectWithoutCategoryInput | BudgetCreateOrConnectWithoutCategoryInput[]
+    createMany?: BudgetCreateManyCategoryInputEnvelope
+    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
   }
 
   export type EnumCategoryOptionFieldUpdateOperationsInput = {
@@ -19759,6 +20153,20 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type BudgetUpdateManyWithoutCategoryNestedInput = {
+    create?: XOR<BudgetCreateWithoutCategoryInput, BudgetUncheckedCreateWithoutCategoryInput> | BudgetCreateWithoutCategoryInput[] | BudgetUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: BudgetCreateOrConnectWithoutCategoryInput | BudgetCreateOrConnectWithoutCategoryInput[]
+    upsert?: BudgetUpsertWithWhereUniqueWithoutCategoryInput | BudgetUpsertWithWhereUniqueWithoutCategoryInput[]
+    createMany?: BudgetCreateManyCategoryInputEnvelope
+    set?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    disconnect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    delete?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    update?: BudgetUpdateWithWhereUniqueWithoutCategoryInput | BudgetUpdateWithWhereUniqueWithoutCategoryInput[]
+    updateMany?: BudgetUpdateManyWithWhereWithoutCategoryInput | BudgetUpdateManyWithWhereWithoutCategoryInput[]
+    deleteMany?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
+  }
+
   export type TransactionUncheckedUpdateManyWithoutCategoryNestedInput = {
     create?: XOR<TransactionCreateWithoutCategoryInput, TransactionUncheckedCreateWithoutCategoryInput> | TransactionCreateWithoutCategoryInput[] | TransactionUncheckedCreateWithoutCategoryInput[]
     connectOrCreate?: TransactionCreateOrConnectWithoutCategoryInput | TransactionCreateOrConnectWithoutCategoryInput[]
@@ -19771,6 +20179,20 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutCategoryInput | TransactionUpdateWithWhereUniqueWithoutCategoryInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutCategoryInput | TransactionUpdateManyWithWhereWithoutCategoryInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type BudgetUncheckedUpdateManyWithoutCategoryNestedInput = {
+    create?: XOR<BudgetCreateWithoutCategoryInput, BudgetUncheckedCreateWithoutCategoryInput> | BudgetCreateWithoutCategoryInput[] | BudgetUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: BudgetCreateOrConnectWithoutCategoryInput | BudgetCreateOrConnectWithoutCategoryInput[]
+    upsert?: BudgetUpsertWithWhereUniqueWithoutCategoryInput | BudgetUpsertWithWhereUniqueWithoutCategoryInput[]
+    createMany?: BudgetCreateManyCategoryInputEnvelope
+    set?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    disconnect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    delete?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    update?: BudgetUpdateWithWhereUniqueWithoutCategoryInput | BudgetUpdateWithWhereUniqueWithoutCategoryInput[]
+    updateMany?: BudgetUpdateManyWithWhereWithoutCategoryInput | BudgetUpdateManyWithWhereWithoutCategoryInput[]
+    deleteMany?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
   }
 
   export type FinancialInsightCreatetipsInput = {
@@ -19824,10 +20246,12 @@ export namespace Prisma {
     set?: $Enums.OtpType
   }
 
-  export type UserUpdateOneRequiredWithoutOtpsNestedInput = {
+  export type UserUpdateOneWithoutOtpsNestedInput = {
     create?: XOR<UserCreateWithoutOtpsInput, UserUncheckedCreateWithoutOtpsInput>
     connectOrCreate?: UserCreateOrConnectWithoutOtpsInput
     upsert?: UserUpsertWithoutOtpsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOtpsInput, UserUpdateWithoutOtpsInput>, UserUncheckedUpdateWithoutOtpsInput>
   }
@@ -20513,6 +20937,33 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -20616,6 +21067,29 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumOtpTypeFilter<$PrismaModel>
     _max?: NestedEnumOtpTypeFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumRelationshipStatusFilter<$PrismaModel = never> = {
@@ -20868,6 +21342,30 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutBudgetsInput, UserUncheckedCreateWithoutBudgetsInput>
   }
 
+  export type CategoryCreateWithoutBudgetsInput = {
+    name: $Enums.CategoryOption
+    type: $Enums.TransactionType
+    created_at?: Date | string
+    deleted_at?: Date | string | null
+    user?: UserCreateNestedOneWithoutCotegoryInput
+    transactions?: TransactionCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryUncheckedCreateWithoutBudgetsInput = {
+    id?: number
+    name: $Enums.CategoryOption
+    type: $Enums.TransactionType
+    created_at?: Date | string
+    deleted_at?: Date | string | null
+    user_id?: string | null
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryCreateOrConnectWithoutBudgetsInput = {
+    where: CategoryWhereUniqueInput
+    create: XOR<CategoryCreateWithoutBudgetsInput, CategoryUncheckedCreateWithoutBudgetsInput>
+  }
+
   export type UserUpsertWithoutBudgetsInput = {
     update: XOR<UserUpdateWithoutBudgetsInput, UserUncheckedUpdateWithoutBudgetsInput>
     create: XOR<UserCreateWithoutBudgetsInput, UserUncheckedCreateWithoutBudgetsInput>
@@ -20911,6 +21409,36 @@ export namespace Prisma {
     refresh_tokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     activity_logs?: ActivityLogUncheckedUpdateManyWithoutUserNestedInput
     financial_insights?: FinancialInsightUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type CategoryUpsertWithoutBudgetsInput = {
+    update: XOR<CategoryUpdateWithoutBudgetsInput, CategoryUncheckedUpdateWithoutBudgetsInput>
+    create: XOR<CategoryCreateWithoutBudgetsInput, CategoryUncheckedCreateWithoutBudgetsInput>
+    where?: CategoryWhereInput
+  }
+
+  export type CategoryUpdateToOneWithWhereWithoutBudgetsInput = {
+    where?: CategoryWhereInput
+    data: XOR<CategoryUpdateWithoutBudgetsInput, CategoryUncheckedUpdateWithoutBudgetsInput>
+  }
+
+  export type CategoryUpdateWithoutBudgetsInput = {
+    name?: EnumCategoryOptionFieldUpdateOperationsInput | $Enums.CategoryOption
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneWithoutCotegoryNestedInput
+    transactions?: TransactionUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type CategoryUncheckedUpdateWithoutBudgetsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: EnumCategoryOptionFieldUpdateOperationsInput | $Enums.CategoryOption
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    transactions?: TransactionUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type UserCreateWithoutCotegoryInput = {
@@ -20992,6 +21520,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BudgetCreateWithoutCategoryInput = {
+    id?: string
+    monthly_limit: Decimal | DecimalJsLike | number | string
+    month_year: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UserCreateNestedOneWithoutBudgetsInput
+  }
+
+  export type BudgetUncheckedCreateWithoutCategoryInput = {
+    id?: string
+    user_id: string
+    monthly_limit: Decimal | DecimalJsLike | number | string
+    month_year: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type BudgetCreateOrConnectWithoutCategoryInput = {
+    where: BudgetWhereUniqueInput
+    create: XOR<BudgetCreateWithoutCategoryInput, BudgetUncheckedCreateWithoutCategoryInput>
+  }
+
+  export type BudgetCreateManyCategoryInputEnvelope = {
+    data: BudgetCreateManyCategoryInput | BudgetCreateManyCategoryInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutCotegoryInput = {
     update: XOR<UserUpdateWithoutCotegoryInput, UserUncheckedUpdateWithoutCotegoryInput>
     create: XOR<UserCreateWithoutCotegoryInput, UserUncheckedCreateWithoutCotegoryInput>
@@ -21069,6 +21625,35 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Transaction"> | Date | string
     updated_at?: DateTimeFilter<"Transaction"> | Date | string
     deleted_at?: DateTimeNullableFilter<"Transaction"> | Date | string | null
+  }
+
+  export type BudgetUpsertWithWhereUniqueWithoutCategoryInput = {
+    where: BudgetWhereUniqueInput
+    update: XOR<BudgetUpdateWithoutCategoryInput, BudgetUncheckedUpdateWithoutCategoryInput>
+    create: XOR<BudgetCreateWithoutCategoryInput, BudgetUncheckedCreateWithoutCategoryInput>
+  }
+
+  export type BudgetUpdateWithWhereUniqueWithoutCategoryInput = {
+    where: BudgetWhereUniqueInput
+    data: XOR<BudgetUpdateWithoutCategoryInput, BudgetUncheckedUpdateWithoutCategoryInput>
+  }
+
+  export type BudgetUpdateManyWithWhereWithoutCategoryInput = {
+    where: BudgetScalarWhereInput
+    data: XOR<BudgetUpdateManyMutationInput, BudgetUncheckedUpdateManyWithoutCategoryInput>
+  }
+
+  export type BudgetScalarWhereInput = {
+    AND?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
+    OR?: BudgetScalarWhereInput[]
+    NOT?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
+    id?: StringFilter<"Budget"> | string
+    user_id?: StringFilter<"Budget"> | string
+    category_id?: IntNullableFilter<"Budget"> | number | null
+    monthly_limit?: DecimalFilter<"Budget"> | Decimal | DecimalJsLike | number | string
+    month_year?: DateTimeFilter<"Budget"> | Date | string
+    created_at?: DateTimeFilter<"Budget"> | Date | string
+    updated_at?: DateTimeFilter<"Budget"> | Date | string
   }
 
   export type UserCreateWithoutFinancial_insightsInput = {
@@ -21522,6 +22107,7 @@ export namespace Prisma {
     created_at?: Date | string
     deleted_at?: Date | string | null
     user?: UserCreateNestedOneWithoutCotegoryInput
+    budgets?: BudgetCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutTransactionsInput = {
@@ -21531,6 +22117,7 @@ export namespace Prisma {
     created_at?: Date | string
     deleted_at?: Date | string | null
     user_id?: string | null
+    budgets?: BudgetUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutTransactionsInput = {
@@ -21610,6 +22197,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneWithoutCotegoryNestedInput
+    budgets?: BudgetUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutTransactionsInput = {
@@ -21619,6 +22207,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    budgets?: BudgetUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type AttachmentUpsertWithWhereUniqueWithoutTransactionInput = {
@@ -21707,12 +22296,18 @@ export namespace Prisma {
     id?: string
     monthly_limit: Decimal | DecimalJsLike | number | string
     month_year: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
+    category?: CategoryCreateNestedOneWithoutBudgetsInput
   }
 
   export type BudgetUncheckedCreateWithoutUserInput = {
     id?: string
+    category_id?: number | null
     monthly_limit: Decimal | DecimalJsLike | number | string
     month_year: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type BudgetCreateOrConnectWithoutUserInput = {
@@ -21756,6 +22351,7 @@ export namespace Prisma {
     created_at?: Date | string
     deleted_at?: Date | string | null
     transactions?: TransactionCreateNestedManyWithoutCategoryInput
+    budgets?: BudgetCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutUserInput = {
@@ -21765,6 +22361,7 @@ export namespace Prisma {
     created_at?: Date | string
     deleted_at?: Date | string | null
     transactions?: TransactionUncheckedCreateNestedManyWithoutCategoryInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutUserInput = {
@@ -21778,15 +22375,19 @@ export namespace Prisma {
   }
 
   export type OtpCreateWithoutUserInput = {
+    email: string
     code: string
     type: $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at: Date | string
   }
 
   export type OtpUncheckedCreateWithoutUserInput = {
     id?: number
+    email: string
     code: string
     type: $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at: Date | string
   }
 
@@ -21948,16 +22549,6 @@ export namespace Prisma {
     data: XOR<BudgetUpdateManyMutationInput, BudgetUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type BudgetScalarWhereInput = {
-    AND?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
-    OR?: BudgetScalarWhereInput[]
-    NOT?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
-    id?: StringFilter<"Budget"> | string
-    user_id?: StringFilter<"Budget"> | string
-    monthly_limit?: DecimalFilter<"Budget"> | Decimal | DecimalJsLike | number | string
-    month_year?: DateTimeFilter<"Budget"> | Date | string
-  }
-
   export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
     where: NotificationWhereUniqueInput
     update: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
@@ -22035,10 +22626,12 @@ export namespace Prisma {
     OR?: OtpScalarWhereInput[]
     NOT?: OtpScalarWhereInput | OtpScalarWhereInput[]
     id?: IntFilter<"Otp"> | number
-    user_id?: StringFilter<"Otp"> | string
+    email?: StringFilter<"Otp"> | string
     code?: StringFilter<"Otp"> | string
     type?: EnumOtpTypeFilter<"Otp"> | $Enums.OtpType
+    payload?: JsonNullableFilter<"Otp">
     expired_at?: DateTimeFilter<"Otp"> | Date | string
+    user_id?: StringNullableFilter<"Otp"> | string | null
   }
 
   export type RefreshTokenUpsertWithWhereUniqueWithoutUserInput = {
@@ -22277,6 +22870,15 @@ export namespace Prisma {
     deleted_at?: Date | string | null
   }
 
+  export type BudgetCreateManyCategoryInput = {
+    id?: string
+    user_id: string
+    monthly_limit: Decimal | DecimalJsLike | number | string
+    month_year: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type TransactionUpdateWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
@@ -22321,6 +22923,33 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type BudgetUpdateWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutBudgetsNestedInput
+  }
+
+  export type BudgetUncheckedUpdateWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BudgetUncheckedUpdateManyWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AttachmentCreateManyTransactionInput = {
     id?: string
     file_path: string
@@ -22360,8 +22989,11 @@ export namespace Prisma {
 
   export type BudgetCreateManyUserInput = {
     id?: string
+    category_id?: number | null
     monthly_limit: Decimal | DecimalJsLike | number | string
     month_year: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type NotificationCreateManyUserInput = {
@@ -22382,8 +23014,10 @@ export namespace Prisma {
 
   export type OtpCreateManyUserInput = {
     id?: number
+    email: string
     code: string
     type: $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at: Date | string
   }
 
@@ -22442,18 +23076,27 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: CategoryUpdateOneWithoutBudgetsNestedInput
   }
 
   export type BudgetUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableIntFieldUpdateOperationsInput | number | null
     monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BudgetUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableIntFieldUpdateOperationsInput | number | null
     monthly_limit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     month_year?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationUpdateWithoutUserInput = {
@@ -22485,6 +23128,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUpdateManyWithoutCategoryNestedInput
+    budgets?: BudgetUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutUserInput = {
@@ -22494,6 +23138,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUncheckedUpdateManyWithoutCategoryNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateManyWithoutUserInput = {
@@ -22505,22 +23150,28 @@ export namespace Prisma {
   }
 
   export type OtpUpdateWithoutUserInput = {
+    email?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
     type?: EnumOtpTypeFieldUpdateOperationsInput | $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OtpUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
     type?: EnumOtpTypeFieldUpdateOperationsInput | $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OtpUncheckedUpdateManyWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
     type?: EnumOtpTypeFieldUpdateOperationsInput | $Enums.OtpType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
