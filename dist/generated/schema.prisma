@@ -191,7 +191,7 @@ model Wallet {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../../dist/generated"
+  output   = "../generated"
 }
 
 datasource db {
