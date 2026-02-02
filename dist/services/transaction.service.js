@@ -34,7 +34,7 @@ export class TransactionService {
             }
         }
         // 3. Jalankan Transaksi Database
-        const result = await prisma.$transaction(async ({ tx }) => {
+        const result = await prisma.$transaction(async (tx) => {
             const newTransaction = await this.transactionRepo.create({
                 name: data.name,
                 amount: data.amount,
@@ -61,8 +61,16 @@ export class TransactionService {
         // 4. Cek Budget (Jika Expense)
         // [FIX] Kirim category_id untuk pengecekan spesifik
         if (result.type === "EXPENSE") {
-            await this.checkOverBudget(userId, result.transaction_date, data.category_id);
+            try {
+                console.log("[transaction] Checking budget for transaction:", result.id);
+                await this.checkOverBudget(userId, result.transaction_date, data.category_id);
+                console.log("[transaction] Budget check completed");
+            }
+            catch (error) {
+                console.error("[WARNING] Failed to check budget:", error);
+            }
         }
+        console.log("[transaction] Transaction created successfully:", result.id);
         return result;
     }
     // --- HELPER PRIVATE: Cek Budget (FIXED & OPTIMIZED) ---
@@ -150,7 +158,7 @@ export class TransactionService {
         if (data.wallet_id && data.wallet_id !== oldTransaction.wallet_id) {
             throw new Error("Tidak dapat memindakan wallet saat update. silakan hapus dan buat baru.");
         }
-        const result = await prisma.$transaction(async ({ tx }) => {
+        const result = await prisma.$transaction(async (tx) => {
             const wallet = await this.walletRepo.findById(oldTransaction.wallet_id);
             if (!wallet)
                 throw new Error("Wallet tidak ditemukan");
@@ -200,7 +208,7 @@ export class TransactionService {
         const wallet = await this.walletRepo.findById(transaction.wallet_id);
         if (!wallet)
             throw new Error("Wallet terkait tidak ditemukan");
-        return await prisma.$transaction(async ({ tx }) => {
+        return await prisma.$transaction(async (tx) => {
             await this.transactionRepo.delete(transactionId, tx);
             let reverseBalance = Number(wallet.balance);
             const amount = Number(transaction.amount);

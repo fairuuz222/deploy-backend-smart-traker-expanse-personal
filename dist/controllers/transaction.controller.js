@@ -59,7 +59,9 @@ export class TransactionController {
             try {
                 console.log(`[transaction] fetched detail id=${id} userId=${userId}`);
             }
-            catch (_) { }
+            catch (err) {
+                console.error("[transaction] getDetail error:", err.message);
+            }
         }
     });
     // 3. CREATE
@@ -77,8 +79,11 @@ export class TransactionController {
         if (process.env.NODE_ENV === "development") {
             try {
                 console.log(`[transaction] created id=${newTransaction.id} amount=${newTransaction.amount}`);
+                console.log(`[transaction] newTransaction object:`, JSON.stringify(newTransaction, null, 2));
             }
-            catch (_) { }
+            catch (error) {
+                console.error(`[transaction] Error logging newTransaction:`, error);
+            }
         }
         res.status(201).json({
             success: true,

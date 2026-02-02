@@ -20,7 +20,9 @@ export class AuthController {
     });
     // 2. VERIFY OTP — Finalisasi registrasi
     verifyOtp = asyncHandler(async (req, res) => {
-        const { email, code } = req.body;
+        const { email } = req.body;
+        // Accept either `code` (legacy) or `otpCode` (newer clients)
+        const code = req.body.code ?? req.body.otpCode;
         if (!email || !code) {
             throw new Error("Email dan kode OTP wajib diisi");
         }

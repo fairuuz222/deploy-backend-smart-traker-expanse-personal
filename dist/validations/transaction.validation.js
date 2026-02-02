@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { TransactionType } from "../../dist/generated/index.js"; // Sesuaikan path
-// Schema untuk CREATE (TIDAK BERUBAH)
+// Schema untuk CREATE (UPDATED)
 export const createTransactionSchema = z.object({
     wallet_id: z.string().uuid("Format Wallet ID tidak valid"),
-    category_id: z.number().int("Category ID harus angka"),
+    category_id: z.number().min(1, "Category ID wajib diisi"),
     name: z.string().min(1, "Nama transaksi wajib diisi").max(100),
     amount: z.number().min(1, "Jumlah harus > 0"),
     type: z.enum(["INCOME", "EXPENSE"]),

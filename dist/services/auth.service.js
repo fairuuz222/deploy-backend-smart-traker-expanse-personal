@@ -40,7 +40,7 @@ export class AuthService {
             throw new Error("Kode OTP salah atau kadaluarsa");
         }
         const payload = otpRecord.payload;
-        const user = await prisma.$transaction(async ({ tx }) => {
+        const user = await prisma.$transaction(async (tx) => {
             const username = payload.fullName.replace(/\s+/g, "").toLowerCase() +
                 Math.floor(100 + Math.random() * 900);
             const createdUser = await tx.user.create({

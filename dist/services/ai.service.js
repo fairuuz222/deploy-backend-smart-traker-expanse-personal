@@ -1,3 +1,4 @@
+// backend/src/services/ai.service.ts
 import prisma from "../database.js";
 import { AiRepository } from "../repositories/ai.repository.js";
 import { TransactionRepository } from "../repositories/transaction.repository.js";
@@ -34,7 +35,7 @@ export class AiService {
     // =================================================================
     // 1. FITUR INSIGHT (Analisa Bulanan)
     // =================================================================
-    async getFinancialInsight(userId) {
+    async getFinancialInsight(userId, luneAwake = false) {
         // 1. CEK CACHE
         const lastInsight = await this.aiRepo.findLatestByUserId(userId);
         if (lastInsight) {
@@ -80,7 +81,7 @@ export class AiService {
             totalExpense,
             budgetLimit: totalBudgetLimit, // Kirim Total Akumulasi Budget
             topCategories,
-        });
+        }, luneAwake);
         // 4. SIMPAN HASIL
         return await this.aiRepo.create({
             user_id: userId,
@@ -93,7 +94,7 @@ export class AiService {
     // =================================================================
     // 2. FITUR CHATBOT
     // =================================================================
-    async chatWithAi(userId, message) {
+    async chatWithAi(userId, message, luneAwake = false) {
         const now = new Date();
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -121,7 +122,7 @@ export class AiService {
       5 TRANSAKSI TERAKHIR:
       ${transactionListText}
     `;
-        return await this.geminiService.chatWithFinancialBot(contextSummary, message, userProfile.occupation, userProfile.relationship);
+        return await this.geminiService.chatWithFinancialBot(contextSummary, message, userProfile.occupation, userProfile.relationship, luneAwake);
     }
 }
 //# sourceMappingURL=ai.service.js.map

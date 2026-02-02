@@ -11,6 +11,16 @@ export declare class TransactionRepository {
     private prisma;
     constructor(prisma: PrismaClient);
     create(data: Prisma.TransactionCreateInput, tx?: Prisma.TransactionClient): Promise<{
+        category: {
+            id: number;
+            name: import("../../dist/generated/index.js").$Enums.CategoryOption;
+            type: import("../../dist/generated/index.js").$Enums.TransactionType;
+        };
+        wallet: {
+            id: string;
+            name: string;
+        };
+    } & {
         created_at: Date;
         id: string;
         user_id: string;
@@ -26,14 +36,14 @@ export declare class TransactionRepository {
     }>;
     findAll(userId: string, filters: TransactionFindAllOptions): Promise<{
         data: ({
-            wallet: {
-                id: string;
-                name: string;
-            };
             category: {
                 id: number;
                 name: import("../../dist/generated/index.js").$Enums.CategoryOption;
                 type: import("../../dist/generated/index.js").$Enums.TransactionType;
+            };
+            wallet: {
+                id: string;
+                name: string;
             };
             attachments: {
                 created_at: Date;
@@ -59,6 +69,14 @@ export declare class TransactionRepository {
         total: number;
     }>;
     findById(id: string): Promise<({
+        category: {
+            created_at: Date;
+            id: number;
+            user_id: string | null;
+            name: import("../../dist/generated/index.js").$Enums.CategoryOption;
+            type: import("../../dist/generated/index.js").$Enums.TransactionType;
+            deleted_at: Date | null;
+        };
         wallet: {
             created_at: Date;
             id: string;
@@ -66,14 +84,6 @@ export declare class TransactionRepository {
             name: string;
             type: import("../../dist/generated/index.js").$Enums.WalletType;
             balance: Prisma.Decimal;
-            deleted_at: Date | null;
-        };
-        category: {
-            created_at: Date;
-            id: number;
-            user_id: string | null;
-            name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-            type: import("../../dist/generated/index.js").$Enums.TransactionType;
             deleted_at: Date | null;
         };
     } & {

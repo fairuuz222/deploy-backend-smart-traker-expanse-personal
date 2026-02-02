@@ -6,7 +6,7 @@ export declare class AiService {
     private geminiService;
     constructor();
     private getUserProfileData;
-    getFinancialInsight(userId: string): Promise<{
+    getFinancialInsight(userId: string, luneAwake?: boolean): Promise<{
         created_at: Date;
         id: string;
         user_id: string;
@@ -15,6 +15,6 @@ export declare class AiService {
         score: number;
         tips: string[];
     }>;
-    chatWithAi(userId: string, message: string): Promise<any>;
+    chatWithAi(userId: string, message: string, luneAwake?: boolean): Promise<any>;
 }
 //# sourceMappingURL=ai.service.d.ts.map
