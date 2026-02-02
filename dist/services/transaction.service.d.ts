@@ -23,14 +23,14 @@ export declare class TransactionService {
     private checkOverBudget;
     getTransactions(userId: string, month?: number, year?: number, type?: string, search?: string, page?: number, limit?: number): Promise<{
         data: ({
+            wallet: {
+                id: string;
+                name: string;
+            };
             category: {
                 id: number;
                 name: import("../../dist/generated/index.js").$Enums.CategoryOption;
                 type: import("../../dist/generated/index.js").$Enums.TransactionType;
-            };
-            wallet: {
-                id: string;
-                name: string;
             };
             attachments: {
                 created_at: Date;
@@ -61,14 +61,6 @@ export declare class TransactionService {
         };
     }>;
     getTransactionDetail(userId: string, transactionId: string): Promise<{
-        category: {
-            created_at: Date;
-            id: number;
-            user_id: string | null;
-            name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-            type: import("../../dist/generated/index.js").$Enums.TransactionType;
-            deleted_at: Date | null;
-        };
         wallet: {
             created_at: Date;
             id: string;
@@ -76,6 +68,14 @@ export declare class TransactionService {
             name: string;
             type: import("../../dist/generated/index.js").$Enums.WalletType;
             balance: import("@prisma/client-runtime-utils").Decimal;
+            deleted_at: Date | null;
+        };
+        category: {
+            created_at: Date;
+            id: number;
+            user_id: string | null;
+            name: import("../../dist/generated/index.js").$Enums.CategoryOption;
+            type: import("../../dist/generated/index.js").$Enums.TransactionType;
             deleted_at: Date | null;
         };
     } & {

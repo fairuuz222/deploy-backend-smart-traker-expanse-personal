@@ -6,95 +6,83 @@ import { ActivityAction } from "../types/activity.types.js";
 import { OtpRepository } from "../repositories/otp.repository.js";
 import { MailService } from "./mail.service.js";
 export class AuthService {
-    activityLogService;
-    otpRepository;
-    mailService;
-    constructor() {
-        this.activityLogService = new ActivityLogService();
-        this.otpRepository = new OtpRepository(prisma);
-        this.mailService = new MailService();
-    }
+    activityLogService = new ActivityLogService();
+    otpRepository = new OtpRepository(prisma);
+    mailService = new MailService();
     /**
-     * TAHAP 1: REQUEST REGISTER
-     * Logic: Cek email, hash password, simpan data ke tabel OTP, kirim email.
+     * TAHAP 1 — REQUEST REGISTER (OTP)
      */
     async registerUser(data) {
         const { fullName, email, password } = data;
         if (!fullName || !email || !password) {
-            throw new Error("Full name, email, and password are required");
+            throw new Error("Full name, email, dan password wajib diisi");
         }
-        // 1. Cek apakah email sudah terdaftar di tabel User
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
             throw new Error("Email sudah terdaftar");
         }
-        // 2. Hash password di awal supaya aman saat disimpan di payload OTP
         const hashedPassword = await hashPassword(password);
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-        // 3. Bersihkan OTP lama untuk email ini & Simpan data registrasi sementara ke tabel OTP
         await this.otpRepository.deleteOtpsByEmail(email);
         await this.otpRepository.createRegistrationOtp(email, otpCode, {
             fullName,
-            password: hashedPassword
+            password: hashedPassword,
         });
-        // 4. Kirim email
         await this.mailService.sendOTP(email, otpCode);
+        return { email };
+    }
+    /**
+     * TAHAP 2 — VERIFY REGISTER (FINAL)
+     */
+    async verifyRegistration(email, code) {
+        const otpRecord = await this.otpRepository.findValidRegistrationOtp(email, code);
+        if (!otpRecord) {
+            throw new Error("Kode OTP salah atau kadaluarsa");
+        }
+        const payload = otpRecord.payload;
+        const user = await prisma.$transaction(async ({ tx }) => {
+            const username = payload.fullName.replace(/\s+/g, "").toLowerCase() +
+                Math.floor(100 + Math.random() * 900);
+            const createdUser = await tx.user.create({
+                data: {
+                    full_name: payload.fullName,
+                    email,
+                    password: payload.password,
+                    role: "USER",
+                    profile: { create: { username } },
+                },
+            });
+            await tx.otp.delete({ where: { id: otpRecord.id } });
+            return createdUser;
+        });
+        await this.activityLogService.log(user.id, ActivityAction.REGISTER, `User verified via email ${email}`);
         return {
-            message: "OTP telah dikirim ke email anda. Silakan verifikasi untuk menyelesaikan registrasi.",
-            email
+            id: user.id,
+            email: user.email,
+            fullName: user.full_name,
         };
     }
     /**
-     * TAHAP 2: VERIFY REGISTER (FINALISASI)
-     * Logic: Cek OTP, ambil payload, create User & Profile secara atomik (Transaction).
+     * LOGIN
      */
-    async verifyRegistration(email, code) {
-        // 1. Cari & Validasi OTP berdasarkan email
-        const otpRecord = await this.otpRepository.findValidRegistrationOtp(email, code);
-        if (!otpRecord) {
-            throw new Error("Kode OTP salah atau sudah kadaluarsa");
-        }
-        const payload = otpRecord.payload;
-        // 2. Eksekusi Create User menggunakan Prisma Transaction
-        const newUser = await prisma.$transaction(async (tx) => {
-            const cleanName = payload.fullName.replace(/\s+/g, " ").toLowerCase();
-            const randomSuffix = Math.floor(100 + Math.random() * 900);
-            const defaultUsername = `${cleanName}${randomSuffix}`;
-            // Create User & Profile
-            const user = await tx.user.create({
-                data: {
-                    full_name: payload.fullName,
-                    email: otpRecord.email,
-                    password: payload.password, // Password sudah ter-hash dari registerUser
-                    role: "USER",
-                    profile: { create: { username: defaultUsername } }
-                }
-            });
-            // Hapus OTP pendaftaran setelah berhasil
-            await tx.otp.delete({ where: { id: otpRecord.id } });
-            return user;
-        });
-        // 3. Log Aktivitas
-        await this.activityLogService.log(newUser.id, ActivityAction.REGISTER, `User account created and verified via email: ${email}`);
-        return {
-            id: newUser.id,
-            email: newUser.email,
-            fullName: newUser.full_name
-        };
-    }
     async loginUser(data) {
         const { email, password } = data;
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user)
             throw new Error("Email atau password salah");
-        const isPasswordValid = await comparePassword(password, user.password);
-        if (!isPasswordValid)
+        const isValid = await comparePassword(password, user.password);
+        if (!isValid)
             throw new Error("Email atau password salah");
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET || "super_secret_key", { expiresIn: "1d" });
-        await this.activityLogService.log(user.id, ActivityAction.LOGIN, "User logged in successfully");
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        await this.activityLogService.log(user.id, ActivityAction.LOGIN, "Login success");
         return {
             accessToken: token,
-            user: { id: user.id, email: user.email, fullName: user.full_name, role: user.role }
+            user: {
+                id: user.id,
+                email: user.email,
+                fullName: user.full_name,
+                role: user.role,
+            },
         };
     }
     async resendOtp(email) {

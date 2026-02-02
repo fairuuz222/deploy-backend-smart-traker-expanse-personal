@@ -2,24 +2,23 @@ export declare class AuthService {
     private activityLogService;
     private otpRepository;
     private mailService;
-    constructor();
     /**
-     * TAHAP 1: REQUEST REGISTER
-     * Logic: Cek email, hash password, simpan data ke tabel OTP, kirim email.
+     * TAHAP 1 — REQUEST REGISTER (OTP)
      */
     registerUser(data: any): Promise<{
-        message: string;
         email: any;
     }>;
     /**
-     * TAHAP 2: VERIFY REGISTER (FINALISASI)
-     * Logic: Cek OTP, ambil payload, create User & Profile secara atomik (Transaction).
+     * TAHAP 2 — VERIFY REGISTER (FINAL)
      */
     verifyRegistration(email: string, code: string): Promise<{
-        id: string;
-        email: string;
-        fullName: string;
+        id: any;
+        email: any;
+        fullName: any;
     }>;
+    /**
+     * LOGIN
+     */
     loginUser(data: any): Promise<{
         accessToken: string;
         user: {

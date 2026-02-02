@@ -55,7 +55,7 @@ export class WalletController {
       console.log('[wallet] update called from', req.ip || req.hostname, 'userId:', userId, 'walletId:', id, 'body:', req.body);
     }
 
-    const wallet = await this.walletService.updateWallet(userId!, id!, req.body);
+    const wallet = await this.walletService.updateWallet(userId!, String(id), req.body);
 
     if (process.env.NODE_ENV === 'development') {
       try {
@@ -80,7 +80,7 @@ export class WalletController {
       console.log('[wallet] delete called from', req.ip || req.hostname, 'userId:', userId, 'walletId:', id);
     }
 
-    await this.walletService.deleteWallet(userId!, id!);
+    await this.walletService.deleteWallet(userId!, String(id));
 
     if (process.env.NODE_ENV === 'development') {
       console.log(`[wallet] deleted id=${id} by userId=${userId}`);

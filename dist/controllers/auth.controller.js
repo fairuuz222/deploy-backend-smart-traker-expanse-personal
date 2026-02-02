@@ -5,58 +5,57 @@ export class AuthController {
     constructor() {
         this.authService = new AuthService();
     }
-    // 1. REGISTER (Tahap 1: Request OTP)
+    // 1. REGISTER — Request OTP
     register = asyncHandler(async (req, res) => {
+        const { email } = req.body;
         if (process.env.NODE_ENV === "development") {
-            const { password, ...safeBody } = req.body;
-            console.log("[auth] register requested:", safeBody);
+            console.log("[auth] register request", { email, from: req.ip });
         }
-        // Memanggil requestRegister yang akan kirim OTP & simpan payload
         const result = await this.authService.registerUser(req.body);
         res.status(200).json({
             success: true,
             message: "Kode OTP telah dikirim ke email anda",
-            data: result
+            data: result,
         });
     });
-    // 2. VERIFY OTP (Tahap 2: Finalisasi Pembuatan Akun)
+    // 2. VERIFY OTP — Finalisasi registrasi
     verifyOtp = asyncHandler(async (req, res) => {
-        const { email, code } = req.body; // Sekarang pakai EMAIL, bukan userId
-        if (process.env.NODE_ENV === "development") {
-            console.log(`[auth] verifyOtp called for email=${email}`);
-        }
+        const { email, code } = req.body;
         if (!email || !code) {
             throw new Error("Email dan kode OTP wajib diisi");
         }
-        // Memanggil logic verifikasi yang sekaligus meng-create user
+        if (process.env.NODE_ENV === "development") {
+            console.log("[auth] verify otp", { email });
+        }
         const newUser = await this.authService.verifyRegistration(email, code);
         res.status(201).json({
             success: true,
             message: "Registrasi berhasil, akun anda telah aktif",
-            data: newUser
+            data: newUser,
         });
     });
-    // 3. LOGIN (Tetap sama)
+    // 3. LOGIN
     login = asyncHandler(async (req, res) => {
+        const { email } = req.body;
         if (process.env.NODE_ENV === "development") {
-            console.log("[auth] login attempt email:", req.body.email);
+            console.log("[auth] login attempt", { email });
         }
         const loginResult = await this.authService.loginUser(req.body);
         res.status(200).json({
             success: true,
             message: "Login berhasil",
-            data: loginResult
+            data: loginResult,
         });
     });
-    // 4. ME (Tetap sama)
+    // 4. ME
     me = asyncHandler(async (req, res) => {
-        const user = req.user;
-        if (!user)
+        if (!req.user) {
             throw new Error("Unauthorized");
+        }
         res.status(200).json({
             success: true,
             message: "Data profile berhasil diambil",
-            data: user
+            data: req.user,
         });
     });
     // 5. RESEND OTP
@@ -69,7 +68,7 @@ export class AuthController {
         res.status(200).json({
             success: true,
             message: "Kode OTP baru telah dikirim",
-            data: result
+            data: result,
         });
     });
     // 6. FORGOT PASSWORD
@@ -82,21 +81,20 @@ export class AuthController {
         res.status(200).json({
             success: true,
             message: "Instruksi reset password telah dikirim ke email",
-            data: result
+            data: result,
         });
     });
-    // 7. RESET PASSWORD (Finalisasi Reset)
+    // 7. RESET PASSWORD
     resetPassword = asyncHandler(async (req, res) => {
-        // Service akan memvalidasi email, code, dan newPassword
         const result = await this.authService.resetPassword(req.body);
         res.status(200).json({
             success: true,
             message: "Password anda berhasil diperbarui",
-            data: result
+            data: result,
         });
     });
+    // 8. CHANGE PASSWORD (Authenticated)
     changePassword = asyncHandler(async (req, res) => {
-        // Ambil userId dari token (lewat middleware auth)
         const userId = req.user?.id;
         if (!userId) {
             throw new Error("Unauthorized");
@@ -105,7 +103,7 @@ export class AuthController {
         res.status(200).json({
             success: true,
             message: "Password berhasil diubah",
-            data: result
+            data: result,
         });
     });
 }

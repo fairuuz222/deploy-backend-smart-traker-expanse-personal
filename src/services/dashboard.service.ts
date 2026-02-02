@@ -15,6 +15,7 @@ export class DashboardService {
 
 
     async getDashboardData(userId: string, month?: number, year?: number) {
+        console.log(`[DashboardService] getDashboardData called for userId: ${userId}, month: ${month}, year: ${year}`);
 
         const now = new Date();
         const targetMonth = month ? month - 1 : now.getMonth();
@@ -22,6 +23,8 @@ export class DashboardService {
 
         const startDate = new Date(targetYear, targetMonth, 1);
         const endDate = new Date(targetYear, targetMonth + 1, 0, 23, 59, 59);
+
+        console.log(`[DashboardService] Date range: ${startDate.toISOString()} to ${endDate.toISOString()}`);
 
         const [summaryStats, dailyData, wallets, recentTransactions] = await Promise.all([
 
@@ -49,6 +52,8 @@ export class DashboardService {
             if (stat.type === TransactionType.EXPENSE) totalExpense = vall;
         })
 
+        console.log(`[DashboardService] Summary - Balance: ${totalRealBalance}, Income: ${totalIncome}, Expense: ${totalExpense}`);
+
         const chartMap = new Map<string, { income: number, expense: number }>();
 
 
@@ -70,8 +75,7 @@ export class DashboardService {
             .map(([date, val]) => ({ date, ...val }))
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getDate());
 
-
-        return {
+        const result = {
             summary: {
                 total_balance: totalRealBalance,
                 income: totalIncome,
@@ -79,6 +83,10 @@ export class DashboardService {
             },
             chart: chartData,
             recent_transactions: recentTransactions.data
-        }
+        };
+
+        console.log(`[DashboardService] Returning dashboard data with ${chartData.length} chart entries and ${recentTransactions.data.length} recent transactions`);
+
+        return result;
     }
 }

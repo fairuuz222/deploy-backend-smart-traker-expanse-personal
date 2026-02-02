@@ -13,7 +13,8 @@ export class AiController {
   public getInsight = asyncHandler(async (req: Request, res: Response) => {
     // 1. Ambil User ID dari Token (hasil decode AuthMiddleware)
     const userId = req.user?.id;
-    
+    const luneAwake = req.query.luneAwake === 'true'; // Extract luneAwake from query
+
     if (!userId) {
         // Sebenarnya ini biasanya sudah dicegat middleware, tapi double check
         const error: any = new Error("Unauthorized");
@@ -28,7 +29,7 @@ export class AiController {
 
     // 3. Panggil Service Utama
     // Controller gak perlu tau soal Gemini/Prisma, dia cuma tau "Minta Insight"
-    const data = await this.aiService.getFinancialInsight(userId);
+    const data = await this.aiService.getFinancialInsight(userId, luneAwake);
 
     if (process.env.NODE_ENV === 'development') {
         console.log(`[AI] Insight generated successfully for userId=${userId}`);
@@ -45,13 +46,18 @@ export class AiController {
 
   public chatWithBot = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user?.id;
-    const { message } = req.body; // Ambil pesan user dari body
+    const { message } = req.body; // Extract message from body
+    const luneAwake = req.query.luneAwake === 'true'; // Extract luneAwake from query
+
+    console.log('Chat request received:', { userId, message, luneAwake, type: typeof luneAwake });
 
     if (!userId) throw new Error("Unauthorized");
     if (!message) throw new Error("Message is required");
 
+    console.log('Using luneAwake:', luneAwake);
+
     // Panggil Service
-    const reply = await this.aiService.chatWithAi(userId, message);
+    const reply = await this.aiService.chatWithAi(userId, message, luneAwake);
 
     res.status(200).json({
       success: true,

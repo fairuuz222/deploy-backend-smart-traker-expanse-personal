@@ -19,7 +19,17 @@ export class TransactionRepository {
   // Create dengan support transaction client (tx)
   async create(data: Prisma.TransactionCreateInput, tx?: Prisma.TransactionClient) {
     const client = tx || this.prisma;
-    return await client.transaction.create({ data });
+    return await client.transaction.create({
+      data,
+      include: {
+        category: {
+          select: { id: true, name: true, type: true }
+        },
+        wallet: {
+          select: { id: true, name: true }
+        }
+      }
+    });
   }
 
   // Find All 

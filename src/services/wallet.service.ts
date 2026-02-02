@@ -15,29 +15,44 @@ export class WalletService {
         return await this.walletRepo.findAll(userId);
     }
 
-    // 👇 2. Terima 'type' sebagai string biasa dari Controller
-    async createWallet(userId: string, data: { name: string; type: string; balance: number }) {
-       
-       // --- VALIDASI MANUAL START ---
-       // Kita cek: Apakah string yang dikirim user ada di dalam daftar WalletType?
-       const isValidType = Object.values(WalletType).includes(data.type as any);
+   async createWallet(
+  userId: string,
+  data: {
+    name: string;
+    type: string;
+    initialBalance?: number;
+    balance?: number;
+  }
+) {
+  // 1️⃣ Tentukan balance (prioritas initialBalance dari frontend)
+  const balance =
+    data.initialBalance !== undefined
+      ? data.initialBalance
+      : data.balance ?? 0;
 
-       if (!isValidType) {
-           // Jika tidak cocok, lempar error
-           throw new Error(`Tipe wallet '${data.type}' tidak valid. Pilihan: ${Object.values(WalletType).join(', ')}`);
-       }
-       // --- VALIDASI MANUAL END ---
+  // 2️⃣ Validasi tipe wallet (string → enum)
+  const isValidType = Object.values(WalletType).includes(
+    data.type as WalletType
+  );
 
-       // 3. Casting: Karena sudah valid, kita paksa (cast) jadi tipe WalletType
-       const typeEnum = data.type as WalletType;
+  if (!isValidType) {
+    throw new Error(
+      `Tipe wallet '${data.type}' tidak valid. Pilihan: ${Object.values(WalletType).join(', ')}`
+    );
+  }
 
-       return await this.walletRepo.create({
-           name: data.name,
-           balance: data.balance,
-           type: typeEnum, // Repository menerima Enum, bukan string
-           user_id: userId
-       });
-    }
+  // 3️⃣ Casting aman setelah validasi
+  const typeEnum = data.type as WalletType;
+
+  // 4️⃣ Simpan ke database
+  return await this.walletRepo.create({
+    name: data.name,
+    type: typeEnum,
+    balance,
+    user_id: userId,
+  });
+}
+
 
     async updateWallet(userId: string, walletId: string, data: { name?: string; type?: string; balance?: number }) {
         const wallet = await this.walletRepo.findById(walletId);

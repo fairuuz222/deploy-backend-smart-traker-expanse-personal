@@ -9,69 +9,73 @@ export class AuthController {
     this.authService = new AuthService();
   }
 
-  // 1. REGISTER (Tahap 1: Request OTP)
+  // 1. REGISTER — Request OTP
   register = asyncHandler(async (req: Request, res: Response) => {
+    const { email } = req.body;
+
     if (process.env.NODE_ENV === 'development') {
-      const { password, ...safeBody } = req.body;
-      console.log('[auth] register requested:', safeBody);
+      console.log('[auth] register request', { email, from: req.ip });
     }
 
-    // Memanggil requestRegister yang akan kirim OTP & simpan payload
     const result = await this.authService.registerUser(req.body);
 
     res.status(200).json({
       success: true,
-      message: "Kode OTP telah dikirim ke email anda",
-      data: result
+      message: 'Kode OTP telah dikirim ke email anda',
+      data: result,
     });
   });
 
-  // 2. VERIFY OTP (Tahap 2: Finalisasi Pembuatan Akun)
+  // 2. VERIFY OTP — Finalisasi registrasi
   verifyOtp = asyncHandler(async (req: Request, res: Response) => {
-    const { email, code } = req.body; // Sekarang pakai EMAIL, bukan userId
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[auth] verifyOtp called for email=${email}`);
-    }
+    const { email } = req.body;
+    // Accept either `code` (legacy) or `otpCode` (newer clients)
+    const code: string | undefined = req.body.code ?? req.body.otpCode;
 
     if (!email || !code) {
-      throw new Error("Email dan kode OTP wajib diisi");
+      throw new Error('Email dan kode OTP wajib diisi');
     }
 
-    // Memanggil logic verifikasi yang sekaligus meng-create user
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[auth] verify otp', { email });
+    }
+
     const newUser = await this.authService.verifyRegistration(email, code);
 
-    res.status(201).json({ // 201 Created karena akun benar-benar lahir di sini
+    res.status(201).json({
       success: true,
-      message: "Registrasi berhasil, akun anda telah aktif",
-      data: newUser
+      message: 'Registrasi berhasil, akun anda telah aktif',
+      data: newUser,
     });
   });
 
-  // 3. LOGIN (Tetap sama)
+  // 3. LOGIN
   login = asyncHandler(async (req: Request, res: Response) => {
+    const { email } = req.body;
+
     if (process.env.NODE_ENV === 'development') {
-      console.log('[auth] login attempt email:', req.body.email);
+      console.log('[auth] login attempt', { email });
     }
 
     const loginResult = await this.authService.loginUser(req.body);
 
     res.status(200).json({
       success: true,
-      message: "Login berhasil",
-      data: loginResult
+      message: 'Login berhasil',
+      data: loginResult,
     });
   });
 
-  // 4. ME (Tetap sama)
+  // 4. ME
   me = asyncHandler(async (req: Request, res: Response) => {
-    const user = req.user;
-    if (!user) throw new Error("Unauthorized");
+    if (!req.user) {
+      throw new Error('Unauthorized');
+    }
 
     res.status(200).json({
       success: true,
-      message: "Data profile berhasil diambil",
-      data: user
+      message: 'Data profile berhasil diambil',
+      data: req.user,
     });
   });
 
@@ -80,15 +84,15 @@ export class AuthController {
     const { email } = req.body;
 
     if (!email) {
-      throw new Error("Email wajib diisi");
+      throw new Error('Email wajib diisi');
     }
 
     const result = await this.authService.resendOtp(email);
 
     res.status(200).json({
       success: true,
-      message: "Kode OTP baru telah dikirim",
-      data: result
+      message: 'Kode OTP baru telah dikirim',
+      data: result,
     });
   });
 
@@ -97,45 +101,43 @@ export class AuthController {
     const { email } = req.body;
 
     if (!email) {
-      throw new Error("Email wajib diisi");
+      throw new Error('Email wajib diisi');
     }
 
     const result = await this.authService.requestPasswordReset(email);
 
     res.status(200).json({
       success: true,
-      message: "Instruksi reset password telah dikirim ke email",
-      data: result
+      message: 'Instruksi reset password telah dikirim ke email',
+      data: result,
     });
   });
 
-  // 7. RESET PASSWORD (Finalisasi Reset)
+  // 7. RESET PASSWORD
   resetPassword = asyncHandler(async (req: Request, res: Response) => {
-    // Service akan memvalidasi email, code, dan newPassword
     const result = await this.authService.resetPassword(req.body);
 
     res.status(200).json({
       success: true,
-      message: "Password anda berhasil diperbarui",
-      data: result
+      message: 'Password anda berhasil diperbarui',
+      data: result,
     });
   });
 
-
+  // 8. CHANGE PASSWORD (Authenticated)
   changePassword = asyncHandler(async (req: Request, res: Response) => {
-    // Ambil userId dari token (lewat middleware auth)
     const userId = req.user?.id;
-    
+
     if (!userId) {
-        throw new Error("Unauthorized");
+      throw new Error('Unauthorized');
     }
 
     const result = await this.authService.changePassword(userId, req.body);
 
     res.status(200).json({
-        success: true,
-        message: "Password berhasil diubah",
-        data: result
+      success: true,
+      message: 'Password berhasil diubah',
+      data: result,
     });
-});
+  });
 }

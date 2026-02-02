@@ -70,9 +70,16 @@ export class TransactionService {
         // 4. Cek Budget (Jika Expense)
         // [FIX] Kirim category_id untuk pengecekan spesifik
         if (result.type === "EXPENSE") {
-            await this.checkOverBudget(userId, result.transaction_date, data.category_id);
+            try {
+                console.log("[transaction] Checking budget for transaction:", result.id);
+                await this.checkOverBudget(userId, result.transaction_date, data.category_id);
+                console.log("[transaction] Budget check completed");
+            } catch (error) {
+                console.error("[WARNING] Failed to check budget:", error);
+            }
         }
 
+        console.log("[transaction] Transaction created successfully:", result.id);
         return result;
     }
 
@@ -88,8 +95,8 @@ export class TransactionService {
             const endOfMonth = new Date(transactionDate.getFullYear(), transactionDate.getMonth() + 1, 0);
 
             // C. Cari Budget yang Relevan (Kategori Spesifik vs Global)
-            const categoryBudget = budgets.find(b => b.category_id === categoryId);
-            const globalBudget = budgets.find(b => b.category_id === null);
+            const categoryBudget = budgets.find((b: any) => b.category_id === categoryId);
+            const globalBudget = budgets.find((b: any) => b.category_id === null);
 
             // D. LOGIC 1: Cek Budget Kategori (Prioritas Utama)
             if (categoryBudget) {

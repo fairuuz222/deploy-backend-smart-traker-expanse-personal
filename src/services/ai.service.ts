@@ -1,3 +1,4 @@
+// backend/src/services/ai.service.ts
 import prisma from '../database';
 import { AiRepository } from '../repositories/ai.repository';
 import { TransactionRepository } from '../repositories/transaction.repository';
@@ -39,7 +40,7 @@ export class AiService {
   // =================================================================
   // 1. FITUR INSIGHT (Analisa Bulanan)
   // =================================================================
-  async getFinancialInsight(userId: string) {
+  async getFinancialInsight(userId: string, luneAwake: boolean = false) {
     // 1. CEK CACHE
     const lastInsight = await this.aiRepo.findLatestByUserId(userId);
     if (lastInsight) {
@@ -106,7 +107,8 @@ export class AiService {
       totalExpense,
       budgetLimit: totalBudgetLimit, // Kirim Total Akumulasi Budget
       topCategories,
-    });
+    },
+    luneAwake);
 
     // 4. SIMPAN HASIL
     return await this.aiRepo.create({
@@ -121,7 +123,7 @@ export class AiService {
   // =================================================================
   // 2. FITUR CHATBOT
   // =================================================================
-  async chatWithAi(userId: string, message: string) {
+  async chatWithAi(userId: string, message: string, luneAwake: boolean = false) {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -167,7 +169,8 @@ export class AiService {
       contextSummary,
       message,
       userProfile.occupation,
-      userProfile.relationship
+      userProfile.relationship,
+      luneAwake
     );
   }
 }

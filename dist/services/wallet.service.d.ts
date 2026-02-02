@@ -13,7 +13,8 @@ export declare class WalletService {
     createWallet(userId: string, data: {
         name: string;
         type: string;
-        balance: number;
+        initialBalance?: number;
+        balance?: number;
     }): Promise<{
         created_at: Date;
         id: string;

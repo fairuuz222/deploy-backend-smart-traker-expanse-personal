@@ -5,14 +5,13 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
   output   = "../../dist/generated"
 }
 
 datasource db {
   provider = "postgresql"
 }
-
 
 // Definisi Enum diletakkan di sini
 enum TransactionType {
@@ -49,7 +48,6 @@ enum CategoryOption {
   OTHER_INCOME
 }
 
-  
 enum WalletType {
   CASH
   BANK
@@ -57,13 +55,12 @@ enum WalletType {
   SAVINGS
 }
 
-
 // 1. Buat Enum Status Hubungan
 enum RelationshipStatus {
-  SINGLE              // Lajang
-  IN_RELATIONSHIP     // Pacaran / Tunangan
-  MARRIED             // Menikah
-  MARRIED_WITH_KIDS   // Menikah & Punya Anak
-  WIDOWED             // Janda/Duda
-  WIDOWED_WITH_KIDS   // Janda/Duda punya anak k
+  SINGLE // Lajang
+  IN_RELATIONSHIP // Pacaran / Tunangan
+  MARRIED // Menikah
+  MARRIED_WITH_KIDS // Menikah & Punya Anak
+  WIDOWED // Janda/Duda
+  WIDOWED_WITH_KIDS // Janda/Duda punya anak k
 }

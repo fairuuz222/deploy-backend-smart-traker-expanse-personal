@@ -4,10 +4,7 @@ export declare const createTransactionSchema: z.ZodObject<{
     category_id: z.ZodNumber;
     name: z.ZodString;
     amount: z.ZodNumber;
-    type: z.ZodNativeEnum<{
-        INCOME: "INCOME";
-        EXPENSE: "EXPENSE";
-    }>;
+    type: z.ZodEnum<["INCOME", "EXPENSE"]>;
     transaction_date: z.ZodString;
     note: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
@@ -32,10 +29,7 @@ export declare const updateTransactionSchema: z.ZodObject<{
     category_id: z.ZodOptional<z.ZodNumber>;
     name: z.ZodOptional<z.ZodString>;
     amount: z.ZodOptional<z.ZodNumber>;
-    type: z.ZodOptional<z.ZodNativeEnum<{
-        INCOME: "INCOME";
-        EXPENSE: "EXPENSE";
-    }>>;
+    type: z.ZodOptional<z.ZodEnum<["INCOME", "EXPENSE"]>>;
     transaction_date: z.ZodOptional<z.ZodString>;
     note: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {

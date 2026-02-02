@@ -11,23 +11,24 @@ export class WalletService {
     async getWallets(userId) {
         return await this.walletRepo.findAll(userId);
     }
-    // 👇 2. Terima 'type' sebagai string biasa dari Controller
     async createWallet(userId, data) {
-        // --- VALIDASI MANUAL START ---
-        // Kita cek: Apakah string yang dikirim user ada di dalam daftar WalletType?
+        // 1️⃣ Tentukan balance (prioritas initialBalance dari frontend)
+        const balance = data.initialBalance !== undefined
+            ? data.initialBalance
+            : data.balance ?? 0;
+        // 2️⃣ Validasi tipe wallet (string → enum)
         const isValidType = Object.values(WalletType).includes(data.type);
         if (!isValidType) {
-            // Jika tidak cocok, lempar error
             throw new Error(`Tipe wallet '${data.type}' tidak valid. Pilihan: ${Object.values(WalletType).join(", ")}`);
         }
-        // --- VALIDASI MANUAL END ---
-        // 3. Casting: Karena sudah valid, kita paksa (cast) jadi tipe WalletType
+        // 3️⃣ Casting aman setelah validasi
         const typeEnum = data.type;
+        // 4️⃣ Simpan ke database
         return await this.walletRepo.create({
             name: data.name,
-            balance: data.balance,
-            type: typeEnum, // Repository menerima Enum, bukan string
-            user_id: userId
+            type: typeEnum,
+            balance,
+            user_id: userId,
         });
     }
     async updateWallet(userId, walletId, data) {
