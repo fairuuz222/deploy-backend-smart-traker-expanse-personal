@@ -9,8 +9,8 @@ const authController = new AuthController();
 const authMiddleware = new AuthMiddleware();
 
 // --- PUBLIC ROUTES (Akses Tanpa Token) ---
-router.post('/register', RateLimitMiddleware.authLimiter, authController.register);
-router.post('/verify-otp', RateLimitMiddleware.authLimiter, authController.verifyOtp);
+router.post('/register', authController.register);
+router.post('/verify-otp', authController.verifyOtp);
 router.post('/login', RateLimitMiddleware.authLimiter, authController.login);
 router.post('/resend-otp', RateLimitMiddleware.authLimiter, authController.resendOtp);
 router.post('/forgot-password', RateLimitMiddleware.authLimiter, authController.forgotPassword);
