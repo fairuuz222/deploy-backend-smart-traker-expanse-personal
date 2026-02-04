@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../dist/generated/index.js";
+import { PrismaClient } from "@prisma/client";
 import { ActivityAction } from "../types/activity.types.js";
 export declare class ActivityLogRepository {
     private prisma;

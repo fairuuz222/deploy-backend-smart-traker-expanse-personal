@@ -1,4 +1,4 @@
-import { PrismaClient, Budget } from '../../dist/generated';
+import { PrismaClient, Budget } from '@prisma/client';
 
 export class BudgetRepository {
   private prisma: PrismaClient;
@@ -12,9 +12,9 @@ export class BudgetRepository {
    * Menggunakan upsert agar atomik (thread-safe)
    */
   async upsertBudget(
-    userId: string, 
-    amount: number, 
-    date: Date, 
+    userId: string,
+    amount: number,
+    date: Date,
     categoryId: number | null
   ): Promise<Budget> {
     // Normalisasi tanggal ke tanggal 1 bulan tersebut (UTC agar aman dari timezone server)

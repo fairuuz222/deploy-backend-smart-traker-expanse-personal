@@ -4,8 +4,8 @@ import { BudgetRepository } from "../repositories/budget.repository";
 import { NotificationService } from "./notification.service";
 import { CategoryRepository } from "../repositories/category.repository";
 import prisma from "../database";
-import type { CreateTransactionDTO, UpdateTransactionDTO } from "../validations/transaction.validation"; 
-import { TransactionType, CategoryOption } from "../../dist/generated";
+import type { CreateTransactionDTO, UpdateTransactionDTO } from "../validations/transaction.validation";
+import { TransactionType, CategoryOption } from "@prisma/client";
 
 export class TransactionService {
     private transactionRepo: TransactionRepository;
@@ -104,16 +104,16 @@ export class TransactionService {
                 const totalCatExpense = await this.transactionRepo.sumExpenseByMonth(
                     userId, startOfMonth, endOfMonth, categoryId
                 );
-                
+
                 const limit = Number(categoryBudget.monthly_limit);
-                
+
                 if (totalCatExpense > limit) {
                     const percentage = Math.round((totalCatExpense / limit) * 100);
                     const catName = categoryBudget.category?.name || "Kategori ini";
-                    
+
                     await this.notificationService.sendAlert(
-                        userId, 
-                        `⚠️ Budget ${catName} Jebol!`, 
+                        userId,
+                        `⚠️ Budget ${catName} Jebol!`,
                         `Pengeluaran ${catName} (Rp ${totalCatExpense.toLocaleString('id-ID')}) sudah ${percentage}% dari limit.`
                     );
                     return; // Stop disini agar tidak spam (opsional)
@@ -126,15 +126,15 @@ export class TransactionService {
                 const totalAllExpense = await this.transactionRepo.sumExpenseByMonth(
                     userId, startOfMonth, endOfMonth
                 );
-                
+
                 const limit = Number(globalBudget.monthly_limit);
-                
+
                 if (totalAllExpense > limit) {
                     const percentage = Math.round((totalAllExpense / limit) * 100);
-                    
+
                     await this.notificationService.sendAlert(
-                        userId, 
-                        "🚨 Global Budget Alert!", 
+                        userId,
+                        "🚨 Global Budget Alert!",
                         `Total pengeluaranmu (Rp ${totalAllExpense.toLocaleString('id-ID')}) sudah tembus ${percentage}% dari budget global.`
                     );
                 }
@@ -208,14 +208,14 @@ export class TransactionService {
             if (!wallet) throw new Error("Wallet tidak ditemukan");
 
             let currentBalance = Number(wallet.balance);
-            
+
             // Revert saldo lama
             if (oldTransaction.type === 'INCOME') currentBalance -= Number(oldTransaction.amount);
             else currentBalance += Number(oldTransaction.amount)
 
             const newAmount = data.amount !== undefined ? data.amount : Number(oldTransaction.amount);
             const newType = data.type !== undefined ? data.type : oldTransaction.type;
-            
+
             // Apply saldo baru
             if (newType === 'INCOME') currentBalance += newAmount;
             else currentBalance -= newAmount
@@ -243,11 +243,11 @@ export class TransactionService {
 
         // Trigger cek budget setelah update
         if (result.type === "EXPENSE") {
-             // [FIX] Gunakan ID kategori baru (jika diupdate) atau yang lama
-             const catId = data.category_id ?? result.category_id;
-             await this.checkOverBudget(userId, result.transaction_date, catId);
+            // [FIX] Gunakan ID kategori baru (jika diupdate) atau yang lama
+            const catId = data.category_id ?? result.category_id;
+            await this.checkOverBudget(userId, result.transaction_date, catId);
         }
-        
+
         return result;
     }
 

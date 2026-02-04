@@ -1,4 +1,4 @@
-import { PrismaClient, TransactionType, CategoryOption } from "../../dist/generated/index.js";
+import { PrismaClient, TransactionType, CategoryOption } from '@prisma/client';
 export declare class CategoryRepository {
     private prisma;
     constructor(prisma: PrismaClient);
@@ -6,8 +6,8 @@ export declare class CategoryRepository {
         created_at: Date;
         id: number;
         user_id: string | null;
-        name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-        type: import("../../dist/generated/index.js").$Enums.TransactionType;
+        name: import("@prisma/client").$Enums.CategoryOption;
+        type: import("@prisma/client").$Enums.TransactionType;
         deleted_at: Date | null;
     }[]>;
     create(data: {
@@ -18,16 +18,16 @@ export declare class CategoryRepository {
         created_at: Date;
         id: number;
         user_id: string | null;
-        name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-        type: import("../../dist/generated/index.js").$Enums.TransactionType;
+        name: import("@prisma/client").$Enums.CategoryOption;
+        type: import("@prisma/client").$Enums.TransactionType;
         deleted_at: Date | null;
     }>;
     findById(id: number): Promise<{
         created_at: Date;
         id: number;
         user_id: string | null;
-        name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-        type: import("../../dist/generated/index.js").$Enums.TransactionType;
+        name: import("@prisma/client").$Enums.CategoryOption;
+        type: import("@prisma/client").$Enums.TransactionType;
         deleted_at: Date | null;
     } | null>;
 }

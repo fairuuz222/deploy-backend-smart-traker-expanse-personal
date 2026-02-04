@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma, TransactionType, } from "../../dist/generated";
+import { PrismaClient, Prisma, TransactionType, } from "@prisma/client";
 
 
 export interface TransactionFindAllOptions {
@@ -206,7 +206,7 @@ export class TransactionRepository {
   }
 
   async sumExpenseByMonth(userId: string, startDate: Date, endDate: Date, categoryId?: number): Promise<number> {
-    
+
     // Siapkan filter dasar
     const whereClause: any = {
       user_id: userId,

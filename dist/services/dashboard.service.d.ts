@@ -16,8 +16,8 @@ export declare class DashboardService {
         recent_transactions: ({
             category: {
                 id: number;
-                name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-                type: import("../../dist/generated/index.js").$Enums.TransactionType;
+                name: import("@prisma/client").$Enums.CategoryOption;
+                type: import("@prisma/client").$Enums.TransactionType;
             };
             wallet: {
                 id: string;
@@ -35,7 +35,7 @@ export declare class DashboardService {
             id: string;
             user_id: string;
             name: string;
-            type: import("../../dist/generated/index.js").$Enums.TransactionType;
+            type: import("@prisma/client").$Enums.TransactionType;
             deleted_at: Date | null;
             amount: import("@prisma/client-runtime-utils").Decimal;
             note: string | null;

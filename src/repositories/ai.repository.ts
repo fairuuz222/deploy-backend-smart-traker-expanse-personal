@@ -1,16 +1,16 @@
-import { PrismaClient } from "../../dist/generated";
+import { PrismaClient } from "@prisma/client";
 
 export class AiRepository {
-    constructor(private prisma: PrismaClient) { }
+  constructor(private prisma: PrismaClient) { }
 
-    async findLatestByUserId(userId: string) {
-        return await this.prisma.financialInsight.findFirst({
-            where: { user_id: userId },
-            orderBy: { created_at: 'desc' }
-        });
-    }
+  async findLatestByUserId(userId: string) {
+    return await this.prisma.financialInsight.findFirst({
+      where: { user_id: userId },
+      orderBy: { created_at: 'desc' }
+    });
+  }
 
-    async create(data: {
+  async create(data: {
     user_id: string;
     score: number;
     status: string;

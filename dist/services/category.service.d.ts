@@ -5,8 +5,8 @@ export declare class CategoryService {
         created_at: Date;
         id: number;
         user_id: string | null;
-        name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-        type: import("../../dist/generated/index.js").$Enums.TransactionType;
+        name: import("@prisma/client").$Enums.CategoryOption;
+        type: import("@prisma/client").$Enums.TransactionType;
         deleted_at: Date | null;
     }[]>;
     createCategory(userId: string, data: {
@@ -16,8 +16,8 @@ export declare class CategoryService {
         created_at: Date;
         id: number;
         user_id: string | null;
-        name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-        type: import("../../dist/generated/index.js").$Enums.TransactionType;
+        name: import("@prisma/client").$Enums.CategoryOption;
+        type: import("@prisma/client").$Enums.TransactionType;
         deleted_at: Date | null;
     }>;
 }

@@ -1,21 +1,21 @@
 // repositories/wallet.repository.ts
-import { PrismaClient, WalletType } from '../../dist/generated'; // Import Enum
+import { PrismaClient, WalletType } from '@prisma/client'; // Import Enum
 
 export class WalletRepository {
 
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: PrismaClient) { }
 
   async findAll(userId: string) {
     // ... code sama
     return await this.prisma.wallet.findMany({
-        where: { user_id: userId, deleted_at: null },
-        orderBy: { created_at: 'desc' }
+      where: { user_id: userId, deleted_at: null },
+      orderBy: { created_at: 'desc' }
     });
   }
 
   async findById(id: string) {
     // ... code sama
-    return await this.prisma.wallet.findFirst({ 
+    return await this.prisma.wallet.findFirst({
       where: { id, deleted_at: null }
     });
   }
@@ -43,8 +43,8 @@ export class WalletRepository {
   async delete(id: string) {
     // ... code sama
     return await this.prisma.wallet.update({
-        where: { id },
-        data: { deleted_at: new Date() }
+      where: { id },
+      data: { deleted_at: new Date() }
     });
   }
 }

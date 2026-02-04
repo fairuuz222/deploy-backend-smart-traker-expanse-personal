@@ -1,6 +1,6 @@
 import { CategoryRepository } from "../repositories/category.repository.js";
 import prisma from "../database.js"; // Import koneksi database singleton
-import { TransactionType, CategoryOption } from "../../dist/generated/index.js";
+import { TransactionType, CategoryOption } from "@prisma/client";
 export class CategoryService {
     categoryRepo;
     constructor() {

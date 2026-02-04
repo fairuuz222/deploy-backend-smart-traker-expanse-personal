@@ -4,7 +4,7 @@ import { BudgetRepository } from "../repositories/budget.repository.js";
 import { NotificationService } from "./notification.service.js";
 import { CategoryRepository } from "../repositories/category.repository.js";
 import prisma from "../database.js";
-import { TransactionType, CategoryOption } from "../../dist/generated/index.js";
+import { TransactionType, CategoryOption } from "@prisma/client";
 export class TransactionService {
     transactionRepo;
     walletRepo;

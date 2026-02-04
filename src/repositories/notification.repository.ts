@@ -1,11 +1,11 @@
-import { PrismaClient } from '../../dist/generated'; // Sesuaikan path ini
+import { PrismaClient } from '@prisma/client'; // Sesuaikan path ini
 
 export class NotificationRepository {
   private prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
-    this.prisma =  prisma;
- 
+    this.prisma = prisma;
+
   }
 
   async create(data: { userId: string; title: string; content: string }) {
@@ -37,7 +37,7 @@ export class NotificationRepository {
 
   async markAsRead(id: number, userId: string) {
     const exists = await this.prisma.notification.findFirst({
-        where: { id: id, user_id: userId }
+      where: { id: id, user_id: userId }
     });
 
     if (!exists) return null;

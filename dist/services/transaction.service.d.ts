@@ -9,8 +9,8 @@ export declare class TransactionService {
     createTransaction(userId: string, data: CreateTransactionDTO): Promise<{
         category: {
             id: number;
-            name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-            type: import("../../dist/generated/index.js").$Enums.TransactionType;
+            name: import("@prisma/client").$Enums.CategoryOption;
+            type: import("@prisma/client").$Enums.TransactionType;
         };
         wallet: {
             id: string;
@@ -21,7 +21,7 @@ export declare class TransactionService {
         id: string;
         user_id: string;
         name: string;
-        type: import("../../dist/generated/index.js").$Enums.TransactionType;
+        type: import("@prisma/client").$Enums.TransactionType;
         deleted_at: Date | null;
         amount: import("@prisma/client-runtime-utils").Decimal;
         note: string | null;
@@ -35,8 +35,8 @@ export declare class TransactionService {
         data: ({
             category: {
                 id: number;
-                name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-                type: import("../../dist/generated/index.js").$Enums.TransactionType;
+                name: import("@prisma/client").$Enums.CategoryOption;
+                type: import("@prisma/client").$Enums.TransactionType;
             };
             wallet: {
                 id: string;
@@ -54,7 +54,7 @@ export declare class TransactionService {
             id: string;
             user_id: string;
             name: string;
-            type: import("../../dist/generated/index.js").$Enums.TransactionType;
+            type: import("@prisma/client").$Enums.TransactionType;
             deleted_at: Date | null;
             amount: import("@prisma/client-runtime-utils").Decimal;
             note: string | null;
@@ -75,8 +75,8 @@ export declare class TransactionService {
             created_at: Date;
             id: number;
             user_id: string | null;
-            name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-            type: import("../../dist/generated/index.js").$Enums.TransactionType;
+            name: import("@prisma/client").$Enums.CategoryOption;
+            type: import("@prisma/client").$Enums.TransactionType;
             deleted_at: Date | null;
         };
         wallet: {
@@ -84,7 +84,7 @@ export declare class TransactionService {
             id: string;
             user_id: string;
             name: string;
-            type: import("../../dist/generated/index.js").$Enums.WalletType;
+            type: import("@prisma/client").$Enums.WalletType;
             balance: import("@prisma/client-runtime-utils").Decimal;
             deleted_at: Date | null;
         };
@@ -93,7 +93,7 @@ export declare class TransactionService {
         id: string;
         user_id: string;
         name: string;
-        type: import("../../dist/generated/index.js").$Enums.TransactionType;
+        type: import("@prisma/client").$Enums.TransactionType;
         deleted_at: Date | null;
         amount: import("@prisma/client-runtime-utils").Decimal;
         note: string | null;
@@ -107,7 +107,7 @@ export declare class TransactionService {
         id: string;
         user_id: string;
         name: string;
-        type: import("../../dist/generated/index.js").$Enums.TransactionType;
+        type: import("@prisma/client").$Enums.TransactionType;
         deleted_at: Date | null;
         amount: import("@prisma/client-runtime-utils").Decimal;
         note: string | null;

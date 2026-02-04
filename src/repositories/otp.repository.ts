@@ -1,5 +1,5 @@
 // src/repositories/otp.repository.ts
-import { PrismaClient, Otp } from '../../dist/generated'; 
+import { PrismaClient, Otp } from '@prisma/client';
 
 export class OtpRepository {
     private prisma: PrismaClient;

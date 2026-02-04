@@ -1,7 +1,7 @@
 import { TransactionRepository } from "../repositories/transaction.repository.js";
 import { WalletRepository } from "../repositories/wallet.repository.js";
 import prisma from "../database.js";
-import { TransactionType } from "../../dist/generated/index.js";
+import { TransactionType } from "@prisma/client";
 export class DashboardService {
     transactionRepo;
     walletRepo;

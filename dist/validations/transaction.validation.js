@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TransactionType } from "../../dist/generated/index.js"; // Sesuaikan path
+import { TransactionType } from "@prisma/client"; // Sesuaikan path
 // Schema untuk CREATE (UPDATED)
 export const createTransactionSchema = z.object({
     wallet_id: z.string().uuid("Format Wallet ID tidak valid"),

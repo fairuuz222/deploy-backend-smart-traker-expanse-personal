@@ -1,4 +1,4 @@
-import { PrismaClient, Budget } from "../../dist/generated/index.js";
+import { PrismaClient, Budget } from '@prisma/client';
 export declare class BudgetRepository {
     private prisma;
     constructor(prismaClient: PrismaClient);
@@ -16,8 +16,8 @@ export declare class BudgetRepository {
             created_at: Date;
             id: number;
             user_id: string | null;
-            name: import("../../dist/generated/index.js").$Enums.CategoryOption;
-            type: import("../../dist/generated/index.js").$Enums.TransactionType;
+            name: import("@prisma/client").$Enums.CategoryOption;
+            type: import("@prisma/client").$Enums.TransactionType;
             deleted_at: Date | null;
         } | null;
     } & {

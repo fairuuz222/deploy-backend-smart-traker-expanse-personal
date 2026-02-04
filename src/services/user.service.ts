@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import prisma from '../database';
-import { RelationshipStatus } from '../../dist/generated'; 
+import { RelationshipStatus } from '@prisma/client';
 
 export class UserService {
 
@@ -21,10 +21,10 @@ export class UserService {
             occupation: true,
             date_of_birth: true,
             relationship: true,
-            avatar: true 
+            avatar: true
           }
         },
-        wallets: true 
+        wallets: true
       }
     });
 
@@ -35,23 +35,23 @@ export class UserService {
 
 
   async updateProfile(
-    userId: string, 
-    data: { 
-      fullName?: string; 
-      username?: string; 
-      address?: string; 
-      dateOfBirth?: string; 
+    userId: string,
+    data: {
+      fullName?: string;
+      username?: string;
+      address?: string;
+      dateOfBirth?: string;
       occupation?: string;
-      relationship?: RelationshipStatus; 
+      relationship?: RelationshipStatus;
       avatar?: string; // Path file baru dari multer
     }
   ) {
     // 1. Ambil data user lama untuk cek foto lama & validasi username
-    const user = await prisma.user.findUnique({ 
-        where: { id: userId },
-        include: { profile: true } 
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { profile: true }
     });
-    
+
     if (!user) throw new Error("User tidak ditemukan");
 
     // Simpan path foto lama untuk dihapus nanti
@@ -59,10 +59,10 @@ export class UserService {
 
     // 2. Validasi Username (Hanya jika username diubah)
     if (data.username && user.profile?.username !== data.username) {
-        const checkUsername = await prisma.profile.findUnique({
-            where: { username: data.username }
-        });
-        if (checkUsername) throw new Error("Username sudah digunakan orang lain");
+      const checkUsername = await prisma.profile.findUnique({
+        where: { username: data.username }
+      });
+      if (checkUsername) throw new Error("Username sudah digunakan orang lain");
     }
 
     // 3. Eksekusi Update ke Database
@@ -71,20 +71,20 @@ export class UserService {
       data: {
         ...(data.fullName && { full_name: data.fullName }),
         profile: {
-          update: { 
-             ...(data.username && { username: data.username }),
-             ...(data.address && { address: data.address }),
-             ...(data.occupation && { occupation: data.occupation }),
-             ...(data.dateOfBirth && { date_of_birth: new Date(data.dateOfBirth) }),
-             ...(data.relationship && { relationship: data.relationship }),
-             ...(data.avatar && { avatar: data.avatar }), // Simpan path foto baru
+          update: {
+            ...(data.username && { username: data.username }),
+            ...(data.address && { address: data.address }),
+            ...(data.occupation && { occupation: data.occupation }),
+            ...(data.dateOfBirth && { date_of_birth: new Date(data.dateOfBirth) }),
+            ...(data.relationship && { relationship: data.relationship }),
+            ...(data.avatar && { avatar: data.avatar }), // Simpan path foto baru
           }
         }
       },
       select: {
         id: true,
         full_name: true,
-        profile: true 
+        profile: true
       }
     });
 
@@ -93,7 +93,7 @@ export class UserService {
     if (data.avatar && oldAvatarPath) {
       // Gunakan path.resolve agar aman di Ubuntu/Linux
       const fullPath = path.resolve(oldAvatarPath);
-      
+
       if (fs.existsSync(fullPath)) {
         try {
           fs.unlinkSync(fullPath);

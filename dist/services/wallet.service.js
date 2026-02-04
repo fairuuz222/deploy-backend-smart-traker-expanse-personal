@@ -2,7 +2,7 @@
 import { WalletRepository } from "../repositories/wallet.repository.js";
 import prisma from "../database.js";
 // 👇 1. Import Enum dari generated prisma
-import { WalletType } from "../../dist/generated/index.js";
+import { WalletType } from "@prisma/client";
 export class WalletService {
     walletRepo;
     constructor() {

@@ -1,4 +1,4 @@
-import { RelationshipStatus } from "../../dist/generated/index.js";
+import { RelationshipStatus } from '@prisma/client';
 export declare class UserService {
     getProfile(userId: string): Promise<{
         id: string;
@@ -9,7 +9,7 @@ export declare class UserService {
             address: string | null;
             date_of_birth: Date | null;
             occupation: string | null;
-            relationship: import("../../dist/generated/index.js").$Enums.RelationshipStatus;
+            relationship: import("@prisma/client").$Enums.RelationshipStatus;
             avatar: string | null;
         } | null;
         wallets: {
@@ -17,7 +17,7 @@ export declare class UserService {
             id: string;
             user_id: string;
             name: string;
-            type: import("../../dist/generated/index.js").$Enums.WalletType;
+            type: import("@prisma/client").$Enums.WalletType;
             balance: import("@prisma/client-runtime-utils").Decimal;
             deleted_at: Date | null;
         }[];
@@ -40,7 +40,7 @@ export declare class UserService {
             address: string | null;
             date_of_birth: Date | null;
             occupation: string | null;
-            relationship: import("../../dist/generated/index.js").$Enums.RelationshipStatus;
+            relationship: import("@prisma/client").$Enums.RelationshipStatus;
             avatar: string | null;
         } | null;
     }>;

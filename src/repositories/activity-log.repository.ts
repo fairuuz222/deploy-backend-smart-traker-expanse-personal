@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../dist/generated'; 
+import { PrismaClient } from '@prisma/client'; 
 import { ActivityAction } from '../types/activity.types';
 
 export class ActivityLogRepository {
